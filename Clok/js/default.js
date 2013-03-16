@@ -1,4 +1,5 @@
-﻿// For an introduction to the Navigation template, see the following documentation:
+﻿/// <reference path="../controls/js/clockControl.js" />
+// For an introduction to the Navigation template, see the following documentation:
 // http://go.microsoft.com/fwlink/?LinkId=232506
 (function () {
     "use strict";
@@ -22,7 +23,21 @@
             if (app.sessionState.history) {
                 nav.history = app.sessionState.history;
             }
+
+            // add our SettingsFlyout to the list when the Settings charm is shown
+            WinJS.Application.onsettings = function (e) {
+                e.detail.applicationcommands = {
+                    "options": {
+                        title: "Clok Options",
+                        href: "/settings/options.html"
+                    }
+                };
+                WinJS.UI.SettingsFlyout.populateSettings(e);
+            };
+
             args.setPromise(WinJS.UI.processAll().then(function () {
+                currentTime.winControl.showClockSeconds = false;
+
                 if (nav.location) {
                     nav.history.current.initialPlaceholder = true;
                     return nav.navigate(nav.location, nav.state);

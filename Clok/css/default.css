@@ -1,7 +1,24 @@
 ﻿#contenthost {
     height: 100%;
     width: 100%;
+    background-color: #000046;
+    background-image: url('/images/background.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 100% calc(100% - 85px);
 }
+
+#currentTime {
+    font-size: 60pt;
+    font-weight: 200;
+    letter-spacing: 0;
+    line-height: 1.15;
+    color: rgba(255, 255, 255, 0.1);
+    position: fixed;
+    top: calc(100% - 85px);
+    left: 10px;
+}
+
 
 .fragment {
     /* Define a grid with rows for a banner and a body */
@@ -38,6 +55,20 @@
         height: 100%;
         width: 100%;
     }
+
+
+@media screen and (max-width: 1400px) {
+    #contenthost {
+        background-size: 40%;
+    }
+}
+
+
+
+
+
+
+
 
 @media screen and (-ms-view-state: snapped) {
     .fragment header[role=banner] {
