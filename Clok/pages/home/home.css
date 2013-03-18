@@ -34,7 +34,7 @@
 
             .homepage section[role=main] #mainMenu .mainMenuItem:hover {
                 cursor: pointer;
-                border: 2px solid #23238C;
+                border: 2px solid #ffffff;
             }
 
             .homepage section[role=main] #mainMenu .mainMenuItem .mainMenuItem-image {
@@ -99,9 +99,9 @@
             padding-bottom: 30px;
         }
 
-        .homepage section[role=main] #timeEntry #elapsedTime #elapsedTimeClock {
-            font-size: 8em;
-        }
+            .homepage section[role=main] #timeEntry #elapsedTime #elapsedTimeClock {
+                font-size: 8em;
+            }
 
         .homepage section[role=main] #timeEntry label {
             display: block;

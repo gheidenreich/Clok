@@ -20,7 +20,7 @@
 
             this.setupTimerRelatedControls();
 
-            elapsedTimeClock.winControl.initialCounterValue = [4, 38, 15];
+            elapsedTimeClock.winControl.initialCounterValue = [0, 0, 0];
         },
 
         toggleTimerMenuItem_click: function (e) {
