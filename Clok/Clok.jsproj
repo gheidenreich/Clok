@@ -72,8 +72,8 @@
     <Content Include="pages\home\home.html" />
     <Content Include="pages\home\home.js" />
     <Content Include="default.html" />
+    <Content Include="settings\about.html" />
     <Content Include="settings\options.html" />
-    <Content Include="settings\settings.css" />
     <None Include="Clok_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

@@ -11,17 +11,16 @@
 
 
 
-    /* all menu buttons */
-
     .homepage section[role=main] #mainMenu {
         -ms-flex: 0 auto;
         width: 424px;
         display: -ms-flexbox;
         -ms-flex-align: center;
-        -ms-flex-pack: justify;
         -ms-flex-direction: row;
         -ms-flex-wrap: wrap;
     }
+
+        /* all menu buttons */
 
         .homepage section[role=main] #mainMenu .mainMenuItem {
             cursor: pointer;
@@ -55,14 +54,14 @@
         /* just the big menu button */
 
         .homepage section[role=main] #mainMenu .primaryMenuItem {
-            height: 414px;
-            width: 414px;
+            height: 408px;
+            width: 408px;
             -ms-grid-rows: 1fr 70px;
         }
 
             .homepage section[role=main] #mainMenu .primaryMenuItem .mainMenuItem-image {
-                height: 384px;
-                width: 384px;
+                height: 382px;
+                width: 382px;
                 margin: 10px;
             }
 
@@ -92,7 +91,8 @@
 
     .homepage section[role=main] #timeEntry {
         margin-left: 20px;
-        -ms-flex: 0 auto;
+        margin-right: 20px;
+        -ms-flex: 1 auto;
     }
 
         .homepage section[role=main] #timeEntry #elapsedTime {
@@ -117,11 +117,6 @@
             height: 75px;
         }
 
-    .homepage section[role=main] #sidebar {
-        margin-left: 20px;
-        margin-right: 20px;
-        -ms-flex: 1 auto;
-    }
 
 
 

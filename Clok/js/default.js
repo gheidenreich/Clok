@@ -30,6 +30,10 @@
                     "options": {
                         title: "Clok Options",
                         href: "/settings/options.html"
+                    },
+                    "about": {
+                        title: "About Clok",
+                        href: "/settings/about.html"
                     }
                 };
                 WinJS.UI.SettingsFlyout.populateSettings(e);

@@ -2,23 +2,31 @@
 <html>
 <head>
     <title>Options</title>
-    <!-- WinJS references -->
-    <link href="/settings/settings.css" rel="stylesheet" />
 </head>
 <body>
-    <div id="settingsDiv" data-win-control="WinJS.UI.SettingsFlyout" 
-        aria-label="Options" 
+    <div id="settingsDiv" data-win-control="WinJS.UI.SettingsFlyout"
+        aria-label="Options"
         data-win-options="{settingsCommandId:'options',width:'narrow'}">
-        
-        <div class="win-ui-dark win-header">
-            <button type="button" class="win-backbutton" 
-                onclick="WinJS.UI.SettingsFlyout.show()"></button>
+
+        <div class="win-ui-dark win-header" style="background-color: #000046;">
+            <button type="button" class="win-backbutton"
+                onclick="WinJS.UI.SettingsFlyout.show()">
+            </button>
             <div class="win-label clok-logo">Options</div>
 
-<!--            <img src="/images/smalllogo.png" style="position: absolute; right: 40px;"/>-->
+            <!--            <img src="/images/smalllogo.png" style="position: absolute; right: 40px;"/>-->
         </div>
         <div class="win-content">
-            Put your settings here.
+
+            <div class="win-settings-section">
+                <h3>Settings Section Header</h3>
+                <p>Put your settings here.</p>
+            </div>
+            <div class="win-settings-section">
+                <h3>Settings Section Header</h3>
+                <p>Put your settings here.</p>
+            </div>
+
         </div>
     </div>
 </body>
