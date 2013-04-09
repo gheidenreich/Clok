@@ -19,7 +19,6 @@
 
         /* all menu buttons */
         .homepage section[role=main] #mainMenu .mainMenuItem {
-            cursor: pointer;
             border: 2px solid transparent;
             margin: 4px;
             background: rgba(0,0,50,0.65);
@@ -41,10 +40,6 @@
                 padding: 6px 15px;
                 background: rgba(0,0,35,0.65);
             }
-
-                .homepage section[role=main] #mainMenu .mainMenuItem .mainMenuItem-overlay .mainMenuItem-title {
-                    overflow: hidden;
-                }
 
         /* just the big menu button */
         .homepage section[role=main] #mainMenu .primaryMenuItem {
