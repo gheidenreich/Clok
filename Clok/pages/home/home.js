@@ -7,52 +7,107 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
+            this.initializeMenuPointerAnimations();
 
             toggleTimerMenuItem.onclick = this.toggleTimerMenuItem_click.bind(this);
-            cameraMenuItem.onclick = this.cameraMenuItem_click.bind(this);
-            projectsMenuItem.onclick = this.projectsMenuItem_click.bind(this);
-            timesheetMenuItem.onclick = this.timesheetMenuItem_click.bind(this);
 
             project.onchange = this.project_change.bind(this);
-
             saveTimeButton.onclick = this.saveTimeButton_click.bind(this);
             discardTimeButton.onclick = this.discardTimeButton_click.bind(this);
 
             this.setupTimerRelatedControls();
 
-            elapsedTimeClock.winControl.initialCounterValue = [0, 0, 0];
+            //elapsedTimeClock.winControl.initialCounterValue = [3, 21, 09];
         },
+
+        initializeMenuPointerAnimations: function () {
+            var buttons = WinJS.Utilities.query(".mainMenuItem");
+            buttons.listen("MSPointerDown", this.pointer_down, false);
+            buttons.listen("MSPointerUp", this.pointer_up, false);
+            buttons.listen("MSPointerOut", this.pointer_up, false);
+        },
+
+        pointer_down: function (e) {
+            WinJS.UI.Animation.pointerDown(e.srcElement);
+            e.preventDefault();
+        },
+
+        pointer_up: function (e) {
+            WinJS.UI.Animation.pointerUp(e.srcElement);
+            e.preventDefault();
+        },
+
+
+
+        timerIsRunning: false,
 
         toggleTimerMenuItem_click: function (e) {
             this.toggleTimer();
-            console.log("timer");
-        },
-
-        cameraMenuItem_click: function (e) {
-            console.log("camera");
-        },
-
-        projectsMenuItem_click: function (e) {
-            console.log("projects");
-        },
-
-        timesheetMenuItem_click: function (e) {
-            console.log("timesheet");
         },
 
         project_change: function (e) {
             this.enableOrDisableButtons();
         },
 
-        saveTimeButton_click: function (e) {
-            // do something with the time entry
-            this.resetTimer();
-            console.log("save time");
+        discardTimeButton_click: function (e) {
+            this.discard();
         },
 
-        discardTimeButton_click: function (e) {
-            this.resetTimer();
-            console.log("discard time");
+        saveTimeButton_click: function (e) {
+            this.save();
+        },
+
+        save: function () {
+            var self = this;
+
+            timeEntry.style.transition = 'color 5ms ease 0s, transform 500ms ease 0s, opacity 500ms ease 0s';
+
+            timeEntry.style.transformOrigin = "-20% 120%";
+            timeEntry.style.transform = 'scale3d(0,0,0)';
+            timeEntry.style.opacity = '0';
+            timeEntry.style.color = '#00ff00';
+
+            var transitionend = function (e1) {
+                if (e1.propertyName !== "color") {
+                    timeEntry.removeEventListener('transitionend', transitionend);
+                    self.resetTimer();
+                }
+            };
+
+            timeEntry.addEventListener('transitionend', transitionend, false);
+        },
+
+        discard: function () {
+            var self = this;
+
+            var slideTransition = WinJS.UI.executeTransition(
+                timeEntry,
+                [
+                    {
+                        property: "transform",
+                        delay: 0,
+                        duration: 500,
+                        timing: "ease",
+                        from: "rotate(0deg) scale3d(1,1,1)",
+                        to: "rotate(720deg) scale3d(0,0,0)"
+                    },
+                    {
+                        property: "opacity",
+                        delay: 0,
+                        duration: 500,
+                        timing: "ease",
+                        from: 1,
+                        to: 0
+                    },
+                    {
+                        property: "color",
+                        delay: 0,
+                        duration: 5,
+                        timing: "ease",
+                        from: '#ffffff',
+                        to: '#ff0000'
+                    }
+                ]).done(function () { self.resetTimer(); });
         },
 
         toggleTimer: function () {
@@ -62,10 +117,20 @@
 
         resetTimer: function () {
             this.timerIsRunning = false;
-            this.setupTimerRelatedControls();
             elapsedTimeClock.winControl.reset();
             project.selectedIndex = 0;
             timeNotes.value = "";
+
+            this.resetTimerStyles();
+            this.setupTimerRelatedControls();
+        },
+
+        resetTimerStyles: function () {
+            timeEntry.style.transition = 'none';
+            timeEntry.style.transformOrigin = "50% 50%";
+            timeEntry.style.transform = 'scale3d(1,1,1)';
+            timeEntry.style.opacity = '1';
+            timeEntry.style.color = '#ffffff';
         },
 
         setupTimerRelatedControls: function () {
@@ -91,7 +156,7 @@
 
             discardTimeButton.disabled = (this.timerIsRunning) || (elapsedTimeClock.winControl.counterValue <= 0);
         },
-
-        timerIsRunning: false,
     });
+
+
 })();

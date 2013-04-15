@@ -17,6 +17,7 @@
         -ms-flex-wrap: wrap;
     }
 
+
         /* all menu buttons */
         .homepage section[role=main] #mainMenu .mainMenuItem {
             border: 2px solid transparent;
@@ -78,7 +79,7 @@
     .homepage section[role=main] #timeEntry {
         margin-left: 20px;
         margin-right: 20px;
-        -ms-flex: 1 auto;
+        -ms-flex: 0 auto;
     }
 
         .homepage section[role=main] #timeEntry #elapsedTime {
@@ -87,6 +88,7 @@
 
             .homepage section[role=main] #timeEntry #elapsedTime #elapsedTimeClock {
                 font-size: 8em;
+                animation: animateTimeIn 1s ease 1s 2 normal;
             }
 
         .homepage section[role=main] #timeEntry label {
@@ -103,6 +105,7 @@
             height: 75px;
         }
 
+
 @media screen and (-ms-view-state: snapped) {
     .homepage section[role=main] {
         margin-left: 20px;
@@ -112,5 +115,43 @@
 @media screen and (-ms-view-state: portrait) {
     .homepage section[role=main] {
         margin-left: 100px;
+    }
+}
+
+
+
+@keyframes animateTimeIn {
+    from {
+        color: rgba(255, 255, 255, 1);
+    }
+
+    50% {
+        color: rgba(255, 255, 0, 0.5);
+    }
+
+    to {
+        color: rgba(255, 255, 255, 1);
+    }
+}
+
+@keyframes animateSpinElement {
+    from {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(90deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    75% {
+        transform: rotate(270deg);
+    }
+
+    to {
+        transform: rotate(360deg);
     }
 }
