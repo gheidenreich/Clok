@@ -1,5 +1,4 @@
 ﻿/// <reference path="/controls/js/clockControl.js" />
-
 (function () {
     "use strict";
 
@@ -28,15 +27,14 @@
         },
 
         pointer_down: function (e) {
-            WinJS.UI.Animation.pointerDown(e.srcElement);
+            WinJS.UI.Animation.pointerDown(this);
             e.preventDefault();
         },
 
         pointer_up: function (e) {
-            WinJS.UI.Animation.pointerUp(e.srcElement);
+            WinJS.UI.Animation.pointerUp(this);
             e.preventDefault();
         },
-
 
 
         timerIsRunning: false,
@@ -58,17 +56,18 @@
         },
 
         save: function () {
-            var self = this;
+            // TODO: save the time entry
 
             timeEntry.style.transition = 'color 5ms ease 0s, transform 500ms ease 0s, opacity 500ms ease 0s';
 
-            timeEntry.style.transformOrigin = "-20% 120%";
+            timeEntry.style.transformOrigin = "-130px 480px";
             timeEntry.style.transform = 'scale3d(0,0,0)';
             timeEntry.style.opacity = '0';
             timeEntry.style.color = '#00ff00';
 
+            var self = this;
             var transitionend = function (e1) {
-                if (e1.propertyName !== "color") {
+                if (e1.propertyName === "transform") {
                     timeEntry.removeEventListener('transitionend', transitionend);
                     self.resetTimer();
                 }
