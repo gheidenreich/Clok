@@ -42,6 +42,31 @@
                 background: rgba(0,0,35,0.65);
             }
 
+            /* buttons that haven't been implemented yet */
+            .homepage section[role=main] #mainMenu .mainMenuItem.notImplemented:hover {
+                cursor: default;
+                border: 2px solid transparent;
+                background: rgba(50,50,50,0.65);
+                background-image: url('/images/Thumb-Down.png');
+                transition: background 500ms ease-in-out 0s;
+            }
+
+                .homepage section[role=main] #mainMenu .mainMenuItem.notImplemented:hover .mainMenuItem-image {
+                    visibility: hidden;
+                }
+
+                .homepage section[role=main] #mainMenu .mainMenuItem.notImplemented:hover .mainMenuItem-overlay {
+                    background: rgba(35,35,35,0.65);
+                }
+
+                    .homepage section[role=main] #mainMenu .mainMenuItem.notImplemented:hover .mainMenuItem-overlay .mainMenuItem-title {
+                        display: none;
+                    }
+
+                    .homepage section[role=main] #mainMenu .mainMenuItem.notImplemented:hover .mainMenuItem-overlay::after {
+                        content: 'Coming Soon';
+                    }
+
         /* just the big menu button */
         .homepage section[role=main] #mainMenu .primaryMenuItem {
             height: 408px;
@@ -75,6 +100,7 @@
             .homepage section[role=main] #mainMenu .secondaryMenuItem .mainMenuItem-overlay .mainMenuItem-title {
                 font-size: 1em;
             }
+
 
     .homepage section[role=main] #timeEntry {
         margin-left: 20px;
