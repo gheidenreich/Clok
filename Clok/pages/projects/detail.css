@@ -1,0 +1,69 @@
+﻿.detail section[role=main] {
+    margin-left: 120px;
+    margin-right: 120px;
+}
+
+.twoColumnGrid {
+    display: -ms-grid;
+    -ms-grid-columns: 2fr 20px 1fr 20px 1fr;
+    max-width: 900px;
+}
+
+    .twoColumnGrid .formField {
+        padding-bottom: 10px;
+    }
+
+    .twoColumnGrid .formField :invalid {
+        border: solid red;
+    }
+
+#projectName,
+#clientName,
+#contactName,
+#contactEmail {
+    width: 430px;
+}
+
+#projectDescription {
+    height: 60px;
+    width: 800px;
+}
+
+#projectNumber,
+#phone {
+    width: 200px;
+}
+
+
+#address1,
+#address2 {
+    width: 600px;
+}
+
+#city {
+    width: 265px;
+}
+
+#region {
+    width: 175px;
+}
+
+#postalCode {
+    width: 140px;
+}
+
+
+
+@media screen and (-ms-view-state: snapped) {
+    .detail section[role=main] {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+
+@media screen and (-ms-view-state: fullscreen-portrait) {
+    .detail section[role=main] {
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+}

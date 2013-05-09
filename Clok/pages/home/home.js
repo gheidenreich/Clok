@@ -2,6 +2,8 @@
 (function () {
     "use strict";
 
+    var nav = WinJS.Navigation;
+
     WinJS.UI.Pages.define("/pages/home/home.html", {
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
@@ -15,6 +17,8 @@
             discardTimeButton.onclick = this.discardTimeButton_click.bind(this);
 
             this.setupTimerRelatedControls();
+
+            projectsMenuItem.onclick = this.projectsMenuItem_click.bind(this);
 
             //elapsedTimeClock.winControl.initialCounterValue = [3, 21, 09];
         },
@@ -155,6 +159,14 @@
 
             discardTimeButton.disabled = (this.timerIsRunning) || (elapsedTimeClock.winControl.counterValue <= 0);
         },
+
+
+
+        projectsMenuItem_click: function (e) {
+            nav.navigate("/pages/projects/detail.html");
+        },
+
+
     });
 
 

@@ -73,6 +73,12 @@
     <Content Include="pages\home\home.html" />
     <Content Include="pages\home\home.js" />
     <Content Include="default.html" />
+    <Content Include="pages\projects\detail.css" />
+    <Content Include="pages\projects\detail.html" />
+    <Content Include="pages\projects\detail.js" />
+    <Content Include="pages\projects\list.css" />
+    <Content Include="pages\projects\list.html" />
+    <Content Include="pages\projects\list.js" />
     <Content Include="settings\about.html" />
     <Content Include="settings\options.html" />
     <None Include="Clok_TemporaryKey.pfx" />
