@@ -1,8 +1,12 @@
-﻿/// <reference path="/controls/js/clockControl.js" />
+﻿/// <reference path="/js/extensions.js" />
+/// <reference path="/controls/js/clockControl.js" />
+/// <reference path="/data/data.js" />
+
 (function () {
     "use strict";
 
     var nav = WinJS.Navigation;
+    var storage = Clok.Data.Storage;
 
     WinJS.UI.Pages.define("/pages/home/home.html", {
         // This function is called whenever a user navigates to this page. It
@@ -12,7 +16,9 @@
 
             toggleTimerMenuItem.onclick = this.toggleTimerMenuItem_click.bind(this);
 
+            this.bindListOfProjects();
             project.onchange = this.project_change.bind(this);
+            editProjectButton.onclick = this.editProjectButton_click.bind(this);
             saveTimeButton.onclick = this.saveTimeButton_click.bind(this);
             discardTimeButton.onclick = this.discardTimeButton_click.bind(this);
 
@@ -22,6 +28,8 @@
 
             //elapsedTimeClock.winControl.initialCounterValue = [3, 21, 09];
         },
+
+        
 
         initializeMenuPointerAnimations: function () {
             var buttons = WinJS.Utilities.query(".mainMenuItem");
@@ -47,8 +55,27 @@
             this.toggleTimer();
         },
 
+        bindListOfProjects: function () {
+            project.options.length = 1; // remove all except first project
+
+            var activeProjects = storage.projects.filter(function (p) { return p.status === Clok.Data.ProjectStatuses.Active; });
+
+            activeProjects.forEach(function (item) {
+                var option = document.createElement("option");
+                option.text = item.name + " (" + item.projectNumber + ")"; // item.toTemplatedString("{name} ({projectNumber})");
+                option.title = item.clientName; //item.toTemplatedString("{clientName}, {projectNumber}");
+                option.value = item.id;
+                project.appendChild(option);
+            });
+        },
+
         project_change: function (e) {
             this.enableOrDisableButtons();
+        },
+
+        editProjectButton_click: function (e) {
+            var id = Number(project.options[project.selectedIndex].value);
+            nav.navigate("/pages/projects/detail.html", { id: id});
         },
 
         discardTimeButton_click: function (e) {
@@ -151,19 +178,19 @@
         },
 
         enableOrDisableButtons: function () {
-            if ((project.value !== "") && (!this.timerIsRunning) && (elapsedTimeClock.winControl.counterValue > 0)) {
+            if ((project.options[project.selectedIndex].value !== "") && (!this.timerIsRunning) && (elapsedTimeClock.winControl.counterValue > 0)) {
                 saveTimeButton.disabled = false;
             } else {
                 saveTimeButton.disabled = true;
             }
-
+            
             discardTimeButton.disabled = (this.timerIsRunning) || (elapsedTimeClock.winControl.counterValue <= 0);
+            
+            editProjectButton.disabled = (project.options[project.selectedIndex].value === "");
         },
 
-
-
         projectsMenuItem_click: function (e) {
-            nav.navigate("/pages/projects/detail.html");
+            nav.navigate("/pages/projects/list.html");
         },
 
 

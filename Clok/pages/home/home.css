@@ -117,6 +117,12 @@
                 animation: animateTimeIn 750ms ease-in-out 1s 2 normal;
             }
 
+        .homepage section[role=main] #timeEntry #editProjectButton {
+            border: 0px;
+            min-width: inherit;
+            font-size: 1.5em;
+        }
+
         .homepage section[role=main] #timeEntry label {
             display: block;
             font-size: 2em;

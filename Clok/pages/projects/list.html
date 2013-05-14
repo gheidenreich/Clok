@@ -21,6 +21,61 @@
             </h1>
         </header>
         <section aria-label="Main content" role="main">
+            <div id="listViewHeaderTemplate" data-win-control="WinJS.Binding.Template" style="display: none">
+                <div class="listViewHeader">
+                    <h1 data-win-bind="innerText: name"></h1>
+                </div>
+            </div>
+
+            <div id="listViewTemplate" data-win-control="WinJS.Binding.Template" style="display: none">
+                <div class="listViewItem">
+                    <h4 data-win-bind="innerText: name"></h4>
+                    <h6>
+                        <span data-win-bind="innerText: projectNumber"></span>
+                         (<span data-win-bind="innerText: status"></span>)
+                    </h6>
+                    <h6 data-win-bind="innerText: clientName"></h6>
+                </div>
+            </div>
+
+            <div id="semanticZoomTemplate" data-win-control="WinJS.Binding.Template" style="display: none">
+                <div class="semanticZoomItem">
+                    <h2 class="semanticZoomItemText" data-win-bind="innerText: name"></h2>
+                </div>
+            </div>
+
+
+            <div id="semanticZoom" data-win-control="WinJS.UI.SemanticZoom">
+
+                <!-- zoomed in -->
+                <div id="listView"
+                    class="win-selectionstylefilled"
+                    data-win-control="WinJS.UI.ListView"
+                    data-win-options="{ 
+                        itemDataSource: Clok.Data.Storage.groupedProjects.dataSource, 
+                        itemTemplate: select('#listViewTemplate'),
+                        groupDataSource: Clok.Data.Storage.groupedProjects.groups.dataSource,
+                        groupHeaderTemplate: select('#listViewHeaderTemplate'), 
+                        selectionMode: 'none', 
+                        tapBehavior: 'invoke', 
+                        swipeBehavior: 'none'
+                }">
+                </div>
+
+                <!-- zoomed out -->
+                <div id="zoomedOutListView"
+                    data-win-control="WinJS.UI.ListView"
+                    data-win-options="{ 
+                        itemDataSource: Clok.Data.Storage.groupedProjects.groups.dataSource, 
+                        itemTemplate: select('#semanticZoomTemplate'),
+                        selectionMode: 'none', 
+                        tapBehavior: 'invoke', 
+                        swipeBehavior: 'none' 
+                    }">
+                </div>
+
+            </div>
+
 
         </section>
     </div>

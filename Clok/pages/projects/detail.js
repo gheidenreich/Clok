@@ -1,7 +1,11 @@
-﻿// For an introduction to the Page Control template, see the following documentation:
+﻿/// <reference path="/data/data.js" />
+
+// For an introduction to the Page Control template, see the following documentation:
 // http://go.microsoft.com/fwlink/?LinkId=232511
 (function () {
     "use strict";
+
+    var storage = Clok.Data.Storage;
 
     WinJS.UI.Pages.define("/pages/projects/detail.html", {
         // This function is called whenever a user navigates to this page. It
@@ -9,29 +13,17 @@
         ready: function (element, options) {
             var $this = this;
 
-            fillDataList(clientList, simpleList);
+            // bind current clients to datalist control
+            this.bindClients();
 
-            var fields = WinJS.Utilities.query("#projectDetailForm input, "
-                + "#projectDetailForm textarea, "
-                + "#projectDetailForm select");
+            // handle field focus and change events
+            this.bindFormFieldEvents();
 
-            fields.listen("focus", function (e) {
-                $this.showAppBar();
-            }, false);
-            fields.listen("change", function (e) {
-                $this.enableAppBarCommand(saveProjectCommand);
-            }, false);
-            projectStatus.addEventListener("change", function (e) {
-                $this.enableAppBarCommand(saveProjectCommand);
-            }, false);
+            this.currProject = storage.projects.getById(options && options.id) || new Clok.Data.Project();
+            var form = document.getElementById("projectDetailForm");
+            WinJS.Binding.processAll(form, this.currProject);
 
-
-
-            saveProjectCommand.addEventListener("click", function (e) {
-                if (projectDetailForm.checkValidity()) {
-                    console.log("valid");
-                }
-            }, false);
+            saveProjectCommand.addEventListener("click", function (e) { $this.saveProjectCommand_click(); }, false);
         },
 
         unload: function () {
@@ -44,38 +36,70 @@
             // TODO: Respond to changes in viewState.
         },
 
-        showAppBar: function () {
-            projectDetailAppBar.winControl.show();
+        //currProject: new Clok.Data.Project(),
+
+        saveProjectCommand_click: function (e) {
+            // don't set the required attribute until the first submit attempt
+            // this prevents the form from appearing to be in error when first loaded
+            WinJS.Utilities.query(".required input, .required textarea, .required select").setAttribute("required", "required");
+
+            if (projectDetailForm.checkValidity()) {
+                this.populateProjectFromForm();
+                storage.projects.save(this.currProject);
+            }
         },
 
-        enableAppBarCommand: function (cmd) {
-            cmd.winControl.disabled = false;
+        populateProjectFromForm: function () {
+            this.currProject.name = document.getElementById("projectName").value;
+            this.currProject.projectNumber = document.getElementById("projectNumber").value;
+            this.currProject.status = (projectStatus.winControl.checked) ? Clok.Data.ProjectStatuses.Active : Clok.Data.ProjectStatuses.Inactive;
+            this.currProject.description = document.getElementById("projectDescription").value;
+            this.currProject.startDate = startDate.winControl.current;
+            this.currProject.dueDate = dueDate.winControl.current;
+            this.currProject.clientName = document.getElementById("clientName").value;
+            this.currProject.contactName = document.getElementById("contactName").value;
+            this.currProject.address1 = document.getElementById("address1").value;
+            this.currProject.address2 = document.getElementById("address2").value;
+            this.currProject.city = document.getElementById("city").value;
+            this.currProject.region = document.getElementById("region").value;
+            this.currProject.postalCode = document.getElementById("postalCode").value;
+            this.currProject.email = document.getElementById("contactEmail").value;
+            this.currProject.phone = document.getElementById("phone").value;
         },
 
-        disableAppBarCommand: function (cmd) {
-            cmd.winControl.disabled = true;
+        bindFormFieldEvents: function () {
+            var $this = this;
+
+            var fields = WinJS.Utilities.query("#projectDetailForm input, "
+                + "#projectDetailForm textarea, "
+                + "#projectDetailForm select");
+
+            fields.listen("focus", function (e) {
+                projectDetailAppBar.winControl.show();
+            }, false);
+            fields.listen("input", function (e) {
+                saveProjectCommand.winControl.disabled = false;
+            }, false);
+
+            projectStatus.addEventListener("input", function (e) {
+                saveProjectCommand.winControl.disabled = false;
+            }, false);
+
+            startDate.addEventListener("change", function (e) {
+                saveProjectCommand.winControl.disabled = false;
+            }, false);
+            dueDate.addEventListener("change", function (e) {
+                saveProjectCommand.winControl.disabled = false;
+            }, false);
+        },
+
+        bindClients: function () {
+            storage.clients.forEach(function (item) {
+                var option = document.createElement("option");
+                option.textContent = item;
+                option.value.textContent = item;
+                clientList.appendChild(option);
+            });
         },
     });
-
-
-    var simpleList = ["Seattle", "Las Vegas", "New York", "Salt lake City"];
-    var complexList = [{ value: 1, text: "Seattle" }, { value: 2, text: "Las Vegas" }, { value: 3, text: "New York" }, { value: 4, text: "Salt lake City" }];
-
-    function fillDataList(listElement, options) {
-        var len = options.length;
-
-        if (len > 0) {
-            for (var i = 0; i < len; i += 1) {
-                var option = document.createElement('option');
-                if (options[i].value && options[i].text) {
-                    option.value = options[i].value;
-                    option.text = options[i].text;
-                } else {
-                    option.value = options[i];
-                    option.text = options[i];
-                }
-                listElement.appendChild(option);
-            }
-        }
-    }
 })();

@@ -13,9 +13,19 @@
         padding-bottom: 10px;
     }
 
-    .twoColumnGrid .formField :invalid {
-        border: solid red;
-    }
+        .twoColumnGrid .formField.required input,
+        .twoColumnGrid .formField.required textarea,
+        .twoColumnGrid .formField.required select {
+            border: solid green;
+            background-color: lightgreen;
+        }
+
+        .twoColumnGrid .formField input:invalid,
+        .twoColumnGrid .formField textarea:invalid,
+        .twoColumnGrid .formField select:invalid {
+            border: solid red;
+            background-color: #EE9090;
+        }
 
 #projectName,
 #clientName,
