@@ -46,6 +46,7 @@
             if (projectDetailForm.checkValidity()) {
                 this.populateProjectFromForm();
                 storage.projects.save(this.currProject);
+                WinJS.Navigation.back();
             }
         },
 

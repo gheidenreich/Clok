@@ -15,10 +15,20 @@
             // static members
 
             projects: new WinJS.Binding.List([]),
-            groupedProjects: {
-                get: function() {
-                    return dataStorageClass.projects.createFiltered(function (p) { return p.status !== Clok.Data.ProjectStatuses.Deleted; }).createGrouped(getProjectGroupKey, getProjectGroupData, compareProjectGroups);
+            nonDeletedGroupedProjects: {
+                get: function () {
+                    return dataStorageClass.getGroupedProjectsByStatus([Clok.Data.ProjectStatuses.Active, Clok.Data.ProjectStatuses.Inactive]);
                 }
+            },
+            getProjectsByStatus: function (statuses) {
+                if (statuses && statuses.length > 0) {
+                    return dataStorageClass.projects.createFiltered(function (p) { return statuses.indexOf(p.status) >= 0; });
+                } else {
+                    return dataStorageClass.projects;
+                }
+            },
+            getGroupedProjectsByStatus: function (statuses) {
+                return dataStorageClass.getProjectsByStatus(statuses).createGrouped(getProjectGroupKey, getProjectGroupData, compareProjectGroups);
             },
             clients: {
                 get: function () {
@@ -109,7 +119,7 @@
     Clok.Data.Storage.projects.push(Clok.Data.Project.createProject("Website Redesign", "2013-0018", "Contoso Ltd.", { id: 1368296808762 }));
 
 
-    
+
 
 })();
 

@@ -10,7 +10,7 @@
             this.projectNumber = "";
             this.status = statuses.Active;
             this.description = "";
-            this.startDate = new Date("12/1/2012");
+            this.startDate = new Date();
             this.dueDate = new Date();
             this.clientName = "";
             this.contactName = "";

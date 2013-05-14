@@ -28,7 +28,7 @@
             </div>
 
             <div id="listViewTemplate" data-win-control="WinJS.Binding.Template" style="display: none">
-                <div class="listViewItem">
+                <div data-class="listViewItem" data-win-bind="className: status">
                     <h4 data-win-bind="innerText: name"></h4>
                     <h6>
                         <span data-win-bind="innerText: projectNumber"></span>
@@ -45,6 +45,12 @@
             </div>
 
 
+            <div class="filters">
+                <button id="allProjectsButton" class="selected">All projects</button>
+                <button id="activeProjectsButton">Only active projects</button>
+                <button id="inactiveProjectsButton">Only inactive projects</button>
+            </div>
+
             <div id="semanticZoom" data-win-control="WinJS.UI.SemanticZoom">
 
                 <!-- zoomed in -->
@@ -52,9 +58,9 @@
                     class="win-selectionstylefilled"
                     data-win-control="WinJS.UI.ListView"
                     data-win-options="{ 
-                        itemDataSource: Clok.Data.Storage.groupedProjects.dataSource, 
+                        itemDataSource: Clok.Data.Storage.nonDeletedGroupedProjects.dataSource, 
                         itemTemplate: select('#listViewTemplate'),
-                        groupDataSource: Clok.Data.Storage.groupedProjects.groups.dataSource,
+                        groupDataSource: Clok.Data.Storage.nonDeletedGroupedProjects.groups.dataSource,
                         groupHeaderTemplate: select('#listViewHeaderTemplate'), 
                         selectionMode: 'none', 
                         tapBehavior: 'invoke', 
@@ -66,7 +72,7 @@
                 <div id="zoomedOutListView"
                     data-win-control="WinJS.UI.ListView"
                     data-win-options="{ 
-                        itemDataSource: Clok.Data.Storage.groupedProjects.groups.dataSource, 
+                        itemDataSource: Clok.Data.Storage.nonDeletedGroupedProjects.groups.dataSource, 
                         itemTemplate: select('#semanticZoomTemplate'),
                         selectionMode: 'none', 
                         tapBehavior: 'invoke', 
