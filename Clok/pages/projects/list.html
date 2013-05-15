@@ -13,6 +13,22 @@
     <script src="list.js"></script>
 </head>
 <body>
+    <div id="projectListAppBar" 
+            class="win-ui-dark" 
+            data-win-control="WinJS.UI.AppBar">
+
+        <button
+            data-win-control="WinJS.UI.AppBarCommand"
+            data-win-options="{
+                id:'addProjectCommand',
+                label:'Add',
+                icon:'add',
+                section:'global',
+                tooltip:'Add'}">
+        </button>
+    </div>
+
+
     <div class="list fragment">
         <header aria-label="Header content" role="banner">
             <button class="win-backbutton" aria-label="Back" disabled type="button"></button>
@@ -45,7 +61,7 @@
             </div>
 
 
-            <div class="filters">
+            <div id="filters">
                 <button id="allProjectsButton" class="selected">All projects</button>
                 <button id="activeProjectsButton">Only active projects</button>
                 <button id="inactiveProjectsButton">Only inactive projects</button>
@@ -58,9 +74,7 @@
                     class="win-selectionstylefilled"
                     data-win-control="WinJS.UI.ListView"
                     data-win-options="{ 
-                        itemDataSource: Clok.Data.Storage.nonDeletedGroupedProjects.dataSource, 
                         itemTemplate: select('#listViewTemplate'),
-                        groupDataSource: Clok.Data.Storage.nonDeletedGroupedProjects.groups.dataSource,
                         groupHeaderTemplate: select('#listViewHeaderTemplate'), 
                         selectionMode: 'none', 
                         tapBehavior: 'invoke', 
@@ -72,7 +86,6 @@
                 <div id="zoomedOutListView"
                     data-win-control="WinJS.UI.ListView"
                     data-win-options="{ 
-                        itemDataSource: Clok.Data.Storage.nonDeletedGroupedProjects.groups.dataSource, 
                         itemTemplate: select('#semanticZoomTemplate'),
                         selectionMode: 'none', 
                         tapBehavior: 'invoke', 

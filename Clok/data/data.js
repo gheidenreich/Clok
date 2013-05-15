@@ -4,43 +4,41 @@
 (function () {
     "use strict";
 
-    var dataStorageClass = WinJS.Class.define(
-        function constructor() {
-            // define and initialize properties
-        },
-        {
-            // instance members
-        },
+    var storage = WinJS.Class.define(
+        function constructor() {/* only static members in this class */ },
+        { /* only static members in this class */ },
         {
             // static members
 
             projects: new WinJS.Binding.List([]),
-            nonDeletedGroupedProjects: {
-                get: function () {
-                    return dataStorageClass.getGroupedProjectsByStatus([Clok.Data.ProjectStatuses.Active, Clok.Data.ProjectStatuses.Inactive]);
-                }
-            },
-            getProjectsByStatus: function (statuses) {
-                if (statuses && statuses.length > 0) {
-                    return dataStorageClass.projects.createFiltered(function (p) { return statuses.indexOf(p.status) >= 0; });
-                } else {
-                    return dataStorageClass.projects;
-                }
-            },
-            getGroupedProjectsByStatus: function (statuses) {
-                return dataStorageClass.getProjectsByStatus(statuses).createGrouped(getProjectGroupKey, getProjectGroupData, compareProjectGroups);
-            },
             clients: {
                 get: function () {
-                    return dataStorageClass._updateClients();
+                    return storage._updateClients();
                 }
             },
+
+
+            compareProjectGroups: function (left, right) {
+                return left.toUpperCase().charCodeAt(0) - right.toUpperCase().charCodeAt(0);
+            },
+
+            getProjectGroupKey: function (dataItem) {
+                return dataItem.clientName.toUpperCase().charAt(0);
+            },
+
+            getProjectGroupData: function (dataItem) {
+                return {
+                    name: dataItem.clientName.toUpperCase().charAt(0)
+                }
+            },
+
+
 
 
             _updateClients: function () {
-                return new WinJS.Binding.List(dataStorageClass.projects
+                return new WinJS.Binding.List(storage.projects
                     .map(function (p) { return p.clientName; }) // make array of just client names
-                    .sort()                                     // sort them
+                    .sort()                                     // sort them so duplicates are adjacent
                     .reduce(function (prev, curr) {             // create a new array where each item is added only once
                         if (curr !== prev[prev.length - 1]) {
                             prev[prev.length] = curr;
@@ -52,23 +50,9 @@
     );
 
 
-    function compareProjectGroups(left, right) {
-        return left.toUpperCase().charCodeAt(0) - right.toUpperCase().charCodeAt(0);
-    }
-
-    function getProjectGroupKey(dataItem) {
-        return dataItem.clientName.toUpperCase().charAt(0);
-    }
-
-    function getProjectGroupData(dataItem) {
-        return {
-            name: dataItem.clientName.toUpperCase().charAt(0)
-        };
-    }
 
 
-
-    dataStorageClass.projects.getById = function (id) {
+    storage.projects.getById = function (id) {
         if (id) {
             var matches = this.filter(function (p) { return p.id === id; });
             if (matches && matches.length === 1) {
@@ -78,19 +62,47 @@
         return undefined;
     };
 
-    dataStorageClass.projects.save = function (p) {
+    storage.projects.delete = function (p) {
         if (p && p.id) {
-            var existing = dataStorageClass.projects.getById(p.id);
-            if (!existing) {
-                dataStorageClass.projects.push(p);
-            } else {
-                dataStorageClass.projects.notifyMutated(dataStorageClass.projects.indexOf(existing));
+            var existing = storage.projects.getById(p.id);
+            if (existing) {
+                existing.status = Clok.Data.ProjectStatuses.Deleted;
+                storage.projects.save(existing);
             }
         }
     };
 
+    storage.projects.save = function (p) {
+        if (p && p.id) {
+            var existing = storage.projects.getById(p.id);
+            if (!existing) {
+                storage.projects.push(p);
+            } else {
+                storage.projects.notifyMutated(storage.projects.indexOf(existing));
+            }
+        }
+    };
+
+
+
+    storage.projects.getGroupedProjectsByStatus = function (statuses) {
+        var filtered = this
+            .createFiltered(function (p) {
+                return statuses.indexOf(p.status) >= 0;
+            });
+
+        var grouped = filtered
+            .createGrouped(
+                storage.getProjectGroupKey,
+                storage.getProjectGroupData,
+                storage.compareProjectGroups);
+
+        return grouped;
+    };
+
+
     WinJS.Namespace.define("Clok.Data", {
-        Storage: dataStorageClass,
+        Storage: storage,
     });
 
 })();

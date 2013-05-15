@@ -4,19 +4,22 @@
 (function () {
     "use strict";
 
-    var storage = Clok.Data.Storage;
+    var data = Clok.Data;
+    var storage = data.Storage;
 
     WinJS.UI.Pages.define("/pages/projects/list.html", {
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-            // TODO: Initialize the page here.
-            listView.addEventListener("iteminvoked", this.listView_itemInvoked, false);
+            listView.winControl.oniteminvoked = this.listView_itemInvoked.bind(this);
+            allProjectsButton.onclick = this.allStatusFilter_click.bind(this);
+            activeProjectsButton.onclick = this.activeStatusFilter_click.bind(this);
+            inactiveProjectsButton.onclick = this.inactiveStatusFilter_click.bind(this);
+            addProjectCommand.onclick = this.addProjectCommand_click.bind(this);
 
-            allProjectsButton.addEventListener("click", this.allStatusFilter_click, false);
-            activeProjectsButton.addEventListener("click", this.activeStatusFilter_click, false);
-            inactiveProjectsButton.addEventListener("click", this.inactiveStatusFilter_click, false);
-
+            this.projects = storage.projects;
+            this.filter = WinJS.Binding.as({ value: [data.ProjectStatuses.Active, data.ProjectStatuses.Inactive] });
+            this.filter.bind("value", this.filter_value_changed.bind(this));
         },
 
         unload: function () {
@@ -29,40 +32,43 @@
             // TODO: Respond to changes in viewState.
         },
 
-        listView_itemInvoked: function (args) {
-            var item = storage.nonDeletedGroupedProjects.getAt(args.detail.itemIndex);
+        filter_value_changed: function (e) {
+            this.filteredProjects = this.projects.getGroupedProjectsByStatus(this.filter.value);
+
+            listView.winControl.itemDataSource = this.filteredProjects.dataSource;
+            listView.winControl.groupDataSource = this.filteredProjects.groups.dataSource;
+            zoomedOutListView.winControl.itemDataSource = this.filteredProjects.groups.dataSource;
+        },
+
+        addProjectCommand_click: function (e) {
+            WinJS.Navigation.navigate("/pages/projects/detail.html");
+        },
+
+        listView_itemInvoked: function (e) {
+            var item = this.filteredProjects.getAt(e.detail.itemIndex);
             WinJS.Navigation.navigate("/pages/projects/detail.html", { id: item.id });
         },
 
         allStatusFilter_click: function (e) {
-            setDataSource(Clok.Data.Storage.getGroupedProjectsByStatus([Clok.Data.ProjectStatuses.Active, Clok.Data.ProjectStatuses.Inactive]));
-            setSelectedButton(allProjectsButton);
+            this.filter.value = [data.ProjectStatuses.Active, data.ProjectStatuses.Inactive];
+            this.setSelectedButton(allProjectsButton);
         },
 
         activeStatusFilter_click: function (e) {
-            setDataSource(Clok.Data.Storage.getGroupedProjectsByStatus([Clok.Data.ProjectStatuses.Active]));
-            setSelectedButton(activeProjectsButton);
+            this.filter.value = [data.ProjectStatuses.Active];
+            this.setSelectedButton(activeProjectsButton);
         },
 
         inactiveStatusFilter_click: function (e) {
-            setDataSource(Clok.Data.Storage.getGroupedProjectsByStatus([Clok.Data.ProjectStatuses.Inactive]));
-            setSelectedButton(inactiveProjectsButton);
+            this.filter.value = [data.ProjectStatuses.Inactive];
+            this.setSelectedButton(inactiveProjectsButton);
         },
 
+        setSelectedButton: function (btnToSelect) {
+            WinJS.Utilities.query("#filters button").removeClass("selected");
+            WinJS.Utilities.addClass(btnToSelect, "selected");
+        },
     });
 
-    var setDataSource = function (ds) {
-        listView.winControl.itemDataSource = ds.dataSource;
-        listView.winControl.groupDataSource = ds.groups.dataSource;
-        zoomedOutListView.winControl.itemDataSource = ds.groups.dataSource;
-    };
-
-    var setSelectedButton = function (btnToSelect) {
-        WinJS.Utilities.removeClass(allProjectsButton, "selected");
-        WinJS.Utilities.removeClass(activeProjectsButton, "selected");
-        WinJS.Utilities.removeClass(inactiveProjectsButton, "selected");
-
-        WinJS.Utilities.addClass(btnToSelect, "selected");
-    };
 
 })();

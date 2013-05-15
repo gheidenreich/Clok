@@ -4,14 +4,18 @@
 }
 
 
-.filters button {
-    border: 0px;
-    font-weight: normal;
+#filters {
+    height: 30px;
 }
 
-.filters button.selected {
-    font-weight: bold;
-}
+    #filters button {
+        border: 0px;
+        font-weight: normal;
+    }
+
+        #filters button.selected {
+            font-weight: bold;
+        }
 
 
 .listViewHeader {
@@ -33,6 +37,7 @@
 
     [data-class=listViewItem].inactive {
         background-color: #464646;
+        color: #cccccc;
     }
 
 #listView {
@@ -46,7 +51,7 @@
 }
 
 #semanticZoom {
-    height: 100%;
+    height: calc(100% - 30px);
     width: calc(100% - 120px);
 }
 

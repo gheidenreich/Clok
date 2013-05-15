@@ -11,19 +11,18 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-            var $this = this;
-
             // bind current clients to datalist control
             this.bindClients();
 
             // handle field focus and change events
-            this.bindFormFieldEvents();
+            this.bindFormFieldEvents(options && options.id);
 
             this.currProject = storage.projects.getById(options && options.id) || new Clok.Data.Project();
             var form = document.getElementById("projectDetailForm");
             WinJS.Binding.processAll(form, this.currProject);
 
-            saveProjectCommand.addEventListener("click", function (e) { $this.saveProjectCommand_click(); }, false);
+            saveProjectCommand.onclick = this.saveProjectCommand_click.bind(this);
+            deleteProjectCommand.onclick = this.deleteProjectCommand_click.bind(this);
         },
 
         unload: function () {
@@ -36,7 +35,10 @@
             // TODO: Respond to changes in viewState.
         },
 
-        //currProject: new Clok.Data.Project(),
+        deleteProjectCommand_click: function (e) {
+            storage.projects.delete(this.currProject);
+            WinJS.Navigation.back();
+        },
 
         saveProjectCommand_click: function (e) {
             // don't set the required attribute until the first submit attempt
@@ -68,9 +70,7 @@
             this.currProject.phone = document.getElementById("phone").value;
         },
 
-        bindFormFieldEvents: function () {
-            var $this = this;
-
+        bindFormFieldEvents: function (existingId) {
             var fields = WinJS.Utilities.query("#projectDetailForm input, "
                 + "#projectDetailForm textarea, "
                 + "#projectDetailForm select");
@@ -82,16 +82,19 @@
                 saveProjectCommand.winControl.disabled = false;
             }, false);
 
-            projectStatus.addEventListener("input", function (e) {
+            projectStatus.addEventListener("change", function (e) {
                 saveProjectCommand.winControl.disabled = false;
             }, false);
-
             startDate.addEventListener("change", function (e) {
                 saveProjectCommand.winControl.disabled = false;
             }, false);
             dueDate.addEventListener("change", function (e) {
                 saveProjectCommand.winControl.disabled = false;
             }, false);
+
+            if (existingId) {
+                deleteProjectCommand.winControl.disabled = false;
+            }
         },
 
         bindClients: function () {
