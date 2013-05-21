@@ -57,7 +57,7 @@
     <Content Include="css\default.css" />
     <Content Include="css\themeroller.css" />
     <Content Include="data\project.js" />
-    <Content Include="data\data.js" />
+    <Content Include="data\storage.js" />
     <Content Include="images\background.png" />
     <Content Include="images\Camera.png" />
     <Content Include="images\Clock-Running.png" />

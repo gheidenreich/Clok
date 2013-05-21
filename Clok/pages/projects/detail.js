@@ -43,7 +43,9 @@
         saveProjectCommand_click: function (e) {
             // don't set the required attribute until the first submit attempt
             // this prevents the form from appearing to be in error when first loaded
-            WinJS.Utilities.query(".required input, .required textarea, .required select").setAttribute("required", "required");
+            WinJS.Utilities
+                .query(".required input, .required textarea, .required select")
+                .setAttribute("required", "required");
 
             if (projectDetailForm.checkValidity()) {
                 this.populateProjectFromForm();
@@ -55,7 +57,10 @@
         populateProjectFromForm: function () {
             this.currProject.name = document.getElementById("projectName").value;
             this.currProject.projectNumber = document.getElementById("projectNumber").value;
-            this.currProject.status = (projectStatus.winControl.checked) ? Clok.Data.ProjectStatuses.Active : Clok.Data.ProjectStatuses.Inactive;
+
+            this.currProject.status = (projectStatus.winControl.checked) ?
+                Clok.Data.ProjectStatuses.Active : Clok.Data.ProjectStatuses.Inactive;
+
             this.currProject.description = document.getElementById("projectDescription").value;
             this.currProject.startDate = startDate.winControl.current;
             this.currProject.dueDate = dueDate.winControl.current;

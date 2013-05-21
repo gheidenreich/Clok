@@ -27,23 +27,6 @@
         },
         {
             // static members
-            createProject: function (name, projectNumber, clientName, otherProperties) {
-                var newProject = new projectClass();
-                newProject.id = (otherProperties && otherProperties.id) || newProject.id;
-                newProject.name = name;
-                newProject.projectNumber = projectNumber;
-                newProject.clientName = clientName;
-
-                if (otherProperties) {
-                    Object.keys(otherProperties).forEach(function (key) {
-                        if ((key !== "id") && (key !== "name") && (key !== "projectNumber") && (key !== "clientName")) {
-                            newProject[key] = otherProperties[key];
-                        }
-                    });
-                }
-
-                return newProject;
-            }
         }
     );
 
