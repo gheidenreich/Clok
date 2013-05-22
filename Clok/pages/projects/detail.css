@@ -3,29 +3,30 @@
     margin-right: 120px;
 }
 
-.twoColumnGrid {
+#projectDetailForm {
     display: -ms-grid;
     -ms-grid-columns: 2fr 20px 1fr 20px 1fr;
     max-width: 900px;
 }
 
-    .twoColumnGrid .formField {
+    #projectDetailForm .formField {
         padding-bottom: 10px;
     }
 
-        .twoColumnGrid .formField.required input,
-        .twoColumnGrid .formField.required textarea,
-        .twoColumnGrid .formField.required select {
+        #projectDetailForm .formField.required input,
+        #projectDetailForm .formField.required textarea,
+        #projectDetailForm .formField.required select {
             border: solid green;
             background-color: lightgreen;
         }
 
-        .twoColumnGrid .formField input:invalid,
-        .twoColumnGrid .formField textarea:invalid,
-        .twoColumnGrid .formField select:invalid {
-            border: solid red;
+        #projectDetailForm .formField input:invalid,
+        #projectDetailForm .formField textarea:invalid,
+        #projectDetailForm .formField select:invalid {
+            border: 5px solid red;
             background-color: #EE9090;
         }
+
 
 #projectName,
 #clientName,
@@ -36,7 +37,7 @@
 
 #projectDescription {
     height: 60px;
-    width: 800px;
+    width: calc(90vw - 120px);
 }
 
 #projectNumber,
@@ -68,6 +69,31 @@
     .detail section[role=main] {
         margin-left: 20px;
         margin-right: 20px;
+        overflow: scroll;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    #projectDetailForm {
+        display: block;
+        max-width: inherit;
+        padding-bottom: 80px;
+    }
+
+    #projectName,
+    #startDate,
+    #dueDate,
+    #clientName,
+    #contactName,
+    #contactEmail,
+    #projectDescription,
+    #projectNumber,
+    #phone,
+    #address1,
+    #address2,
+    #city,
+    #region,
+    #postalCode {
+        width: 250px;
     }
 }
 
@@ -75,5 +101,10 @@
     .detail section[role=main] {
         margin-left: 100px;
         margin-right: 100px;
+    }
+
+    #projectDetailForm {
+        display: block;
+        max-width: inherit;
     }
 }

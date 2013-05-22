@@ -11,15 +11,13 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-            // bind current clients to datalist control
-            this.bindClients();
-
-            // handle field focus and change events
-            this.bindFormFieldEvents(options && options.id);
+            this.configureAppBar(options && options.id);
 
             this.currProject = storage.projects.getById(options && options.id) || new Clok.Data.Project();
             var form = document.getElementById("projectDetailForm");
             WinJS.Binding.processAll(form, this.currProject);
+
+            this.bindClients();
 
             saveProjectCommand.onclick = this.saveProjectCommand_click.bind(this);
             deleteProjectCommand.onclick = this.deleteProjectCommand_click.bind(this);
@@ -33,11 +31,14 @@
             /// <param name="element" domElement="true" />
 
             // TODO: Respond to changes in viewState.
-        },
-
-        deleteProjectCommand_click: function (e) {
-            storage.projects.delete(this.currProject);
-            WinJS.Navigation.back();
+            var viewStates = Windows.UI.ViewManagement.ApplicationViewState;
+            if (viewState === viewStates.snapped) {
+                startDate.winControl.monthPattern = "{month.abbreviated}";
+                dueDate.winControl.monthPattern = "{month.abbreviated}";
+            } else {
+                startDate.winControl.monthPattern = "{month.full}";
+                dueDate.winControl.monthPattern = "{month.full}";
+            }
         },
 
         saveProjectCommand_click: function (e) {
@@ -52,6 +53,11 @@
                 storage.projects.save(this.currProject);
                 WinJS.Navigation.back();
             }
+        },
+
+        deleteProjectCommand_click: function (e) {
+            storage.projects.delete(this.currProject);
+            WinJS.Navigation.back();
         },
 
         populateProjectFromForm: function () {
@@ -75,26 +81,13 @@
             this.currProject.phone = document.getElementById("phone").value;
         },
 
-        bindFormFieldEvents: function (existingId) {
+        configureAppBar: function (existingId) {
             var fields = WinJS.Utilities.query("#projectDetailForm input, "
                 + "#projectDetailForm textarea, "
                 + "#projectDetailForm select");
 
             fields.listen("focus", function (e) {
                 projectDetailAppBar.winControl.show();
-            }, false);
-            fields.listen("input", function (e) {
-                saveProjectCommand.winControl.disabled = false;
-            }, false);
-
-            projectStatus.addEventListener("change", function (e) {
-                saveProjectCommand.winControl.disabled = false;
-            }, false);
-            startDate.addEventListener("change", function (e) {
-                saveProjectCommand.winControl.disabled = false;
-            }, false);
-            dueDate.addEventListener("change", function (e) {
-                saveProjectCommand.winControl.disabled = false;
             }, false);
 
             if (existingId) {

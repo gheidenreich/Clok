@@ -38,7 +38,7 @@
         Deleted: "deleted",
     });
 
-    var projectStatusToCheckedState = WinJS.Binding.converter(function (status) {
+    var projectStatusToBoolConverter = WinJS.Binding.converter(function (status) {
         return (status === Clok.Data.ProjectStatuses.Active);
     });
 
@@ -47,7 +47,7 @@
     WinJS.Namespace.define("Clok.Data", {
         Project: projectClass,
         ProjectStatuses: statuses,
-        ProjectStatusToCheckedConverter: projectStatusToCheckedState,
+        ProjectStatusToBoolConverter: projectStatusToBoolConverter,
     });
 
 })();

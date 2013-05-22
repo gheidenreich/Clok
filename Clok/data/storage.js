@@ -16,14 +16,16 @@
                     return new WinJS.Binding.List(storage.projects
                         .map(function (p) { return p.clientName; }) // make array of just client names
                         .sort()                                     // sort them so duplicates are adjacent
-                        .reduce(function (prev, curr) {             // create a new array where each item is added only once
-                            if (curr !== prev[prev.length - 1]) {
-                                prev[prev.length] = curr;
+                        .reduce(function (accumulated, current) {   // create a new array where each item is added only once
+                            if (current !== accumulated[accumulated.length - 1]) {
+                                accumulated[accumulated.length] = current;
                             }
-                            return prev;
-                        }, []));
+                            return accumulated;
+                        }, [])
+                    );
                 }
             },
+
 
 
             compareProjectGroups: function (left, right) {
@@ -55,40 +57,6 @@
         }
     );
 
-
-
-
-    storage.projects.getById = function (id) {
-        if (id) {
-            var matches = this.filter(function (p) { return p.id === id; });
-            if (matches && matches.length === 1) {
-                return matches[0];
-            }
-        }
-        return undefined;
-    };
-
-    storage.projects.delete = function (p) {
-        if (p && p.id) {
-            var existing = storage.projects.getById(p.id);
-            if (existing) {
-                existing.status = Clok.Data.ProjectStatuses.Deleted;
-                storage.projects.save(existing);
-            }
-        }
-    };
-
-    storage.projects.save = function (p) {
-        if (p && p.id) {
-            var existing = storage.projects.getById(p.id);
-            if (!existing) {
-                storage.projects.push(p);
-            } else {
-                storage.projects.notifyMutated(storage.projects.indexOf(existing));
-            }
-        }
-    };
-
     storage.projects.getGroupedProjectsByStatus = function (statuses) {
         var filtered = this
             .createFiltered(function (p) {
@@ -104,6 +72,34 @@
         return grouped;
     };
 
+    storage.projects.getById = function (id) {
+        if (id) {
+            var matches = this.filter(function (p) { return p.id === id; });
+            if (matches && matches.length === 1) {
+                return matches[0];
+            }
+        }
+        return undefined;
+    };
+
+    storage.projects.save = function (p) {
+        if (p && p.id) {
+            var existing = storage.projects.getById(p.id);
+            if (!existing) {
+                storage.projects.push(p);
+            }
+        }
+    };
+
+    storage.projects.delete = function (p) {
+        if (p && p.id) {
+            var existing = storage.projects.getById(p.id);
+            if (existing) {
+                existing.status = Clok.Data.ProjectStatuses.Deleted;
+                storage.projects.save(existing);
+            }
+        }
+    };
 
     WinJS.Namespace.define("Clok.Data", {
         Storage: storage,
@@ -146,28 +142,3 @@
     projects.push(createProject("Employee Portal", "2013-0017", "Woodgrove Bank", 1368296808761));
     projects.push(createProject("Website Redesign", "2013-0018", "Contoso Ltd.", 1368296808762));
 })();
-
-
-
-/*
-
-bind <select> contents: http://social.msdn.microsoft.com/Forums/en-US/winappswithhtml5/thread/83d8a271-bd6f-45d4-8db4-7bb3c45aa2b4/
-WinJS.Binding.as(...): http://msdn.microsoft.com/en-us/library/windows/apps/br229801.aspx
-
-Simple binding: http://msdn.microsoft.com/en-us/library/windows/apps/hh700358.aspx
-
-List ctor {binding: true}: http://msdn.microsoft.com/en-us/library/windows/apps/hh700764.aspx
-
-with mixins: http://msdn.microsoft.com/en-us/library/windows/apps/hh700355.aspx
-    //WinJS.Class.mix(Clok.Data.Project,
-    //    WinJS.Binding.mixin,
-    //    WinJS.Binding.expandProperties({ name: "" }));
-
-binding with templates: http://msdn.microsoft.com/en-us/library/windows/apps/hh700356.aspx
-
-
-custom data source: http://msdn.microsoft.com/en-us/library/windows/apps/hh770849.aspx
-
-soundex for search?
-
-*/
