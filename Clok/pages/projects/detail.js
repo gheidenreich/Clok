@@ -21,6 +21,7 @@
 
             saveProjectCommand.onclick = this.saveProjectCommand_click.bind(this);
             deleteProjectCommand.onclick = this.deleteProjectCommand_click.bind(this);
+            goToTimeEntriesCommand.onclick = this.goToTimeEntriesCommand_click.bind(this);
         },
 
         unload: function () {
@@ -60,6 +61,12 @@
             WinJS.Navigation.back();
         },
 
+        goToTimeEntriesCommand_click: function (e) {
+            if (this.currProject && this.currProject.id) {
+                WinJS.Navigation.navigate("/pages/timeEntries/list.html", { projectId: this.currProject.id });
+            }
+        },
+
         populateProjectFromForm: function () {
             this.currProject.name = document.getElementById("projectName").value;
             this.currProject.projectNumber = document.getElementById("projectNumber").value;
@@ -92,6 +99,7 @@
 
             if (existingId) {
                 deleteProjectCommand.winControl.disabled = false;
+                goToTimeEntriesCommand.winControl.disabled = false;
             }
         },
 
