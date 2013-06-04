@@ -1,6 +1,7 @@
 ﻿/// <reference path="/js/extensions.js" />
 /// <reference path="/controls/js/clockControl.js" />
-/// <reference path="/data/data.js" />
+/// <reference path="/data/storage.js" />
+/// <reference path="/data/timeEntry.js" />
 
 (function () {
     "use strict";
@@ -25,11 +26,12 @@
             this.setupTimerRelatedControls();
 
             projectsMenuItem.onclick = this.projectsMenuItem_click.bind(this);
+            timesheetMenuItem.onclick = this.timesheetMenuItem_click.bind(this);
 
             //elapsedTimeClock.winControl.initialCounterValue = [3, 21, 09];
         },
 
-        
+
 
         initializeMenuPointerAnimations: function () {
             var buttons = WinJS.Utilities.query(".mainMenuItem");
@@ -75,7 +77,7 @@
 
         editProjectButton_click: function (e) {
             var id = Number(project.options[project.selectedIndex].value);
-            nav.navigate("/pages/projects/detail.html", { id: id});
+            nav.navigate("/pages/projects/detail.html", { id: id });
         },
 
         discardTimeButton_click: function (e) {
@@ -87,24 +89,42 @@
         },
 
         save: function () {
-            // TODO: save the time entry
-
-            timeEntry.style.transition = 'color 5ms ease 0s, transform 500ms ease 0s, opacity 500ms ease 0s';
-
-            timeEntry.style.transformOrigin = "-130px 480px";
-            timeEntry.style.transform = 'scale3d(0,0,0)';
-            timeEntry.style.opacity = '0';
-            timeEntry.style.color = '#00ff00';
-
             var self = this;
-            var transitionend = function (e1) {
-                if (e1.propertyName === "transform") {
-                    timeEntry.removeEventListener('transitionend', transitionend);
-                    self.resetTimer();
-                }
-            };
 
-            timeEntry.addEventListener('transitionend', transitionend, false);
+            var transitionPromise = new WinJS.Promise(function (comp, err, prog) {
+                timeEntry.style.transition = 'color 5ms ease 0s, transform 500ms ease 0s, opacity 500ms ease 0s';
+
+                timeEntry.style.transformOrigin = "-130px 480px";
+                timeEntry.style.transform = 'scale3d(0,0,0)';
+                timeEntry.style.opacity = '0';
+                timeEntry.style.color = '#00ff00';
+
+                var self = this;
+                var transitionend = function (e1) {
+                    if (e1.propertyName === "transform") {
+                        timeEntry.removeEventListener('transitionend', transitionend);
+                        comp();
+                    }
+                };
+
+                timeEntry.addEventListener('transitionend', transitionend, false);
+            });
+
+            var savePromise = new WinJS.Promise(function (comp, err, prog) {
+                var timeEntry = new Clok.Data.TimeEntry();
+                timeEntry.projectId = Number(project.options[project.selectedIndex].value);
+                timeEntry.dateWorked = new Date(elapsedTimeClock.winControl.startStops[0].startTime);
+                timeEntry.elapsedSeconds = elapsedTimeClock.winControl.timerValue;
+                timeEntry.notes = timeNotes.value;
+
+                storage.timeEntries.save(timeEntry);
+
+                comp();
+            });
+
+            WinJS.Promise.join([transitionPromise, savePromise]).done(function () {
+                self.resetTimer();
+            });
         },
 
         discard: function () {
@@ -178,19 +198,23 @@
         },
 
         enableOrDisableButtons: function () {
-            if ((project.options[project.selectedIndex].value !== "") && (!this.timerIsRunning) && (elapsedTimeClock.winControl.counterValue > 0)) {
+            if ((project.options[project.selectedIndex].value !== "") && (!this.timerIsRunning) && (elapsedTimeClock.winControl.timerValue > 0)) {
                 saveTimeButton.disabled = false;
             } else {
                 saveTimeButton.disabled = true;
             }
-            
-            discardTimeButton.disabled = (this.timerIsRunning) || (elapsedTimeClock.winControl.counterValue <= 0);
-            
+
+            discardTimeButton.disabled = (this.timerIsRunning) || (elapsedTimeClock.winControl.timerValue <= 0);
+
             editProjectButton.disabled = (project.options[project.selectedIndex].value === "");
         },
 
         projectsMenuItem_click: function (e) {
             nav.navigate("/pages/projects/list.html");
+        },
+
+        timesheetMenuItem_click: function (e) {
+            nav.navigate("/pages/timeEntries/list.html");
         },
 
 
