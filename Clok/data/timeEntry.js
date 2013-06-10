@@ -61,10 +61,10 @@
     var dateToYearConverter = WinJS.Binding.converter(function (dt) {
         return formatDate("year", dt);
     });
-    
+
 
     var secondsToHoursConverter = WinJS.Binding.converter(function (s) {
-        return (s / 3600).toFixed(2);
+        return Clok.Utilities.SecondsToHours(s, true);
     });
 
 

@@ -21,6 +21,18 @@
                 return [0, 0, 0];
             },
 
+            SecondsToHours: function (totalSec, asString) {
+                if (!isNaN(totalSec)) {
+                    if (asString) {
+                        return (totalSec / 3600).toFixed(2);
+                    } else {
+                        return (totalSec / 3600);
+                    }
+                }
+
+                return 0;
+            },
+
 
             TimeSpanToSeconds: function (timespan) {
                 if (isNaN(timespan)) {

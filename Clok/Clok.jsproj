@@ -62,6 +62,7 @@
     <Content Include="data\storage.js" />
     <Content Include="images\background.png" />
     <Content Include="images\Camera.png" />
+    <Content Include="images\chart-small-sprites.png" />
     <Content Include="images\Clock-Running.png" />
     <Content Include="images\Clock-Stopped.png" />
     <Content Include="images\logo.png" />
@@ -72,10 +73,13 @@
     <Content Include="images\Thumb-Down.png" />
     <Content Include="images\Timesheet-small-sprites.png" />
     <Content Include="images\Timesheet.png" />
+    <Content Include="js\lib\flotr2\flotr2.js" />
+    <Content Include="js\lib\flotr2\license.txt" />
     <Content Include="js\utilities.js" />
     <Content Include="js\default.js" />
     <Content Include="js\extensions.js" />
     <Content Include="js\navigator.js" />
+    <Content Include="js\workers\timeGraphWorker.js" />
     <Content Include="pages\home\home.css" />
     <Content Include="pages\home\home.html" />
     <Content Include="pages\home\home.js" />
@@ -86,6 +90,9 @@
     <Content Include="pages\projects\list.css" />
     <Content Include="pages\projects\list.html" />
     <Content Include="pages\projects\list.js" />
+    <Content Include="pages\timeEntries\graph.css" />
+    <Content Include="pages\timeEntries\graph.html" />
+    <Content Include="pages\timeEntries\graph.js" />
     <Content Include="pages\timeEntries\list.css" />
     <Content Include="pages\timeEntries\list.html" />
     <Content Include="pages\timeEntries\list.js" />

@@ -30,6 +30,7 @@
             cancelTimeButton.onclick = this.cancelTimeButton_click.bind(this);
 
             addTimeEntryCommand.winControl.onclick = this.addTimeEntryCommand_click.bind(this);
+            graphTimeEntriesCommand.winControl.onclick = this.graphTimeEntriesCommand_click.bind(this);
             deleteTimeEntriesCommand.winControl.onclick = this.deleteTimeEntriesCommand_click.bind(this);
 
         },
@@ -48,10 +49,12 @@
 
         setupListViewBinding: function (options) {
             this.filter = WinJS.Binding.as({
-                startDate: (options && options.startDate) || new Date().addMonths(-1),
+                startDate: (options && options.startDate) || new Date().addMonths(-1).addDays(1),
                 endDate: (options && options.endDate) || new Date().removeTimePart(),
                 projectId: (options && options.projectId) || -1
             });
+
+            this.filteredResults = null;
 
             this.filter.bind("startDate", this.filter_changed.bind(this));
             this.filter.bind("endDate", this.filter_changed.bind(this));
@@ -83,6 +86,7 @@
                             this.updateResultsArea(timeEntriesListView);
                         }
                         this.showAddForm();
+                        this.filteredResults = results;
                         timeEntriesListView.winControl.itemDataSource = results.dataSource;
                     }.bind(this),
                     function error(results) {
@@ -92,11 +96,11 @@
         },
 
         filterStartDate_change: function (e) {
-            this.filter.startDate = filterStartDate.winControl.current;
+            this.filter.startDate = filterStartDate.winControl.current.removeTimePart();
         },
 
         filterEndDate_change: function (e) {
-            this.filter.endDate = filterEndDate.winControl.current;
+            this.filter.endDate = filterEndDate.winControl.current.removeTimePart();
         },
 
         filterProjectId_change: function (e) {
@@ -169,6 +173,12 @@
 
         addTimeEntryCommand_click: function (e) {
             timeEntriesListView.winControl.selection.clear();
+        },
+
+        graphTimeEntriesCommand_click: function (e) {
+            WinJS.Navigation.navigate("/pages/timeEntries/graph.html", {
+                filter: this.filter,
+            });
         },
 
         deleteTimeEntriesCommand_click: function (e) {

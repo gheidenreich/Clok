@@ -292,6 +292,8 @@
     var date1 = (new Date()).addMonths(-1).addDays(1);
     var date2 = (new Date()).addMonths(-1).addDays(2);
     var date3 = (new Date()).addMonths(-1).addDays(3);
+    var date4 = (new Date()).addMonths(-1).addDays(4);
+    var date5 = (new Date()).addMonths(-1).addDays(5);
 
     var timeId = 1369623987766;
     time.push(createTime(timeId++, 1368296808757, date1, 10800, "Lorem ipsum dolor sit."));
@@ -301,14 +303,14 @@
     time.push(createTime(timeId++, 1368296808759, date1, 7200, "Donec sit amet porttitor."));
     time.push(createTime(timeId++, 1368296808758, date3, 8100, "Praesent congue euismod diam."));
     time.push(createTime(timeId++, 1368296808758, date2, 14400, "Curabitur euismod mollis."));
-    time.push(createTime(timeId++, 1368296808761, date1, 7200, "Donec sit amet porttitor."));
+    time.push(createTime(timeId++, 1368296808761, date4, 7200, "Donec sit amet porttitor."));
     time.push(createTime(timeId++, 1368296808748, date3, 7200, "Praesent congue euismod diam."));
     time.push(createTime(timeId++, 1368296808748, date2, 7200, "Curabitur euismod mollis."));
     time.push(createTime(timeId++, 1368296808748, date1, 7200, "Donec sit amet porttitor."));
-    time.push(createTime(timeId++, 1368296808746, date2, 8100, "Praesent congue euismod diam."));
+    time.push(createTime(timeId++, 1368296808746, date4, 8100, "Praesent congue euismod diam."));
     time.push(createTime(timeId++, 1368296808753, date2, 14400, "Curabitur euismod mollis."));
     time.push(createTime(timeId++, 1368296808753, date1, 7200, "Donec sit amet porttitor."));
-    time.push(createTime(timeId++, 1368296808761, date2, 10800, "Donec semper risus nec."));
+    time.push(createTime(timeId++, 1368296808761, date5, 10800, "Donec semper risus nec."));
 })();
 
 
