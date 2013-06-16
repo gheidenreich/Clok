@@ -65,9 +65,6 @@
                         } else {
                             this.showDirectionResults(false);
                         }
-
-
-                        var x = 1;
                     }.bind(this), function (errorEvent) {
                         this.showDirectionResults(false);
                     }.bind(this));
