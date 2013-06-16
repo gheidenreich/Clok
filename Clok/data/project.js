@@ -23,10 +23,36 @@
             this.phone = "";
         },
         {
-            // instance members
+            isAddressSpecified: function () {
+                return (!!this.address1
+                        || !!this.city
+                        || !!this.region
+                        || !!this.postalCode);
+            }
         },
         {
-            // static members
+            createFromIndexedDbCursor: function (value) {
+                var project = new Clok.Data.Project();
+
+                project.id = value.id;
+                project.name = value.name;
+                project.projectNumber = value.projectNumber;
+                project.status = value.status;
+                project.description = value.description;
+                project.startDate = value.startDate;
+                project.dueDate = value.dueDate;
+                project.clientName = value.clientName;
+                project.contactName = value.contactName;
+                project.address1 = value.address1;
+                project.address2 = value.address2;
+                project.city = value.city;
+                project.region = value.region;
+                project.postalCode = value.postalCode;
+                project.email = value.email;
+                project.phone = value.phone;
+
+                return project;
+            },
         }
     );
 

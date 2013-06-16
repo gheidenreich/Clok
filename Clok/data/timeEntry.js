@@ -36,14 +36,33 @@
 
             project: {
                 get: function () {
-                    var p = Clok.Data.Storage.projects.getById(this.projectId);
+                    var p = Clok.Data.Storage.projects.getById(this._projectId);
                     return p;
                 }
             },
 
         },
         {
-            // static members
+            create: function (id, projectId, dateWorked, elapsedSeconds, notes) {
+                var newTimeEntry = new Clok.Data.TimeEntry();
+
+                newTimeEntry.id = id;
+                newTimeEntry.projectId = projectId;
+                newTimeEntry.dateWorked = dateWorked;
+                newTimeEntry.elapsedSeconds = elapsedSeconds;
+                newTimeEntry.notes = notes;
+
+                return newTimeEntry;
+            },
+
+            createFromIndexedDbCursor: function (value) {
+                return timeEntryClass.create(
+                    value.id,
+                    value._projectId,
+                    value._dateWorked,
+                    value.elapsedSeconds,
+                    value.notes);
+            },
         }
     );
 

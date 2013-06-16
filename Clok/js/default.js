@@ -36,6 +36,12 @@
                         href: "/settings/about.html"
                     }
                 };
+
+                e.detail.applicationcommands.idbhelper = {
+                    title: "IndexedDB Helper",
+                    href: "/settings/idbhelper.html"
+                };
+
                 WinJS.UI.SettingsFlyout.populateSettings(e);
             };
 

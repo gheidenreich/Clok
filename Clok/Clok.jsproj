@@ -57,6 +57,7 @@
     <Content Include="controls\js\timerControl.js" />
     <Content Include="css\default.css" />
     <Content Include="css\themeroller.css" />
+    <Content Include="data\bingMapsWrapper.js" />
     <Content Include="data\timeEntry.js" />
     <Content Include="data\project.js" />
     <Content Include="data\storage.js" />
@@ -87,6 +88,9 @@
     <Content Include="pages\projects\detail.css" />
     <Content Include="pages\projects\detail.html" />
     <Content Include="pages\projects\detail.js" />
+    <Content Include="pages\projects\directions.css" />
+    <Content Include="pages\projects\directions.html" />
+    <Content Include="pages\projects\directions.js" />
     <Content Include="pages\projects\list.css" />
     <Content Include="pages\projects\list.html" />
     <Content Include="pages\projects\list.js" />
@@ -96,7 +100,29 @@
     <Content Include="pages\timeEntries\list.css" />
     <Content Include="pages\timeEntries\list.html" />
     <Content Include="pages\timeEntries\list.js" />
+    <Content Include="settings\idbhelper.html" />
     <Content Include="settings\about.html" />
+    <Content Include="settings\IDBExplorer\close.png" />
+    <Content Include="settings\IDBExplorer\d.gif" />
+    <Content Include="settings\IDBExplorer\d.png" />
+    <Content Include="settings\IDBExplorer\database.png" />
+    <Content Include="settings\IDBExplorer\database5.png" />
+    <Content Include="settings\IDBExplorer\funnel.png" />
+    <Content Include="settings\IDBExplorer\funnel2.png" />
+    <Content Include="settings\IDBExplorer\funnel5.png" />
+    <Content Include="settings\IDBExplorer\IDBExplorer.css" />
+    <Content Include="settings\IDBExplorer\IDBExplorer.html" />
+    <Content Include="settings\IDBExplorer\IDBExplorer.js" />
+    <Content Include="settings\IDBExplorer\index.png" />
+    <Content Include="settings\IDBExplorer\jquery-2.0.2.min.js" />
+    <Content Include="settings\IDBExplorer\jquery-1.6.4.min.js" />
+    <Content Include="settings\IDBExplorer\jquery.jstree.js" />
+    <Content Include="settings\IDBExplorer\objectstore.png" />
+    <Content Include="settings\IDBExplorer\refresh.png" />
+    <Content Include="settings\IDBExplorer\style.css" />
+    <Content Include="settings\IDBExplorer\table5.png" />
+    <Content Include="settings\IDBExplorer\table6.png" />
+    <Content Include="settings\IDBExplorer\throbber.gif" />
     <Content Include="settings\options.html" />
     <None Include="Clok_TemporaryKey.pfx" />
   </ItemGroup>
