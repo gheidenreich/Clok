@@ -7,6 +7,90 @@
 (function () {
     "use strict";
 
+    var data = Clok.Data;
+
+    var _openDb = new WinJS.Promise(function (comp, err) {
+        var db;
+
+        var request = indexedDB.open("Clok", 1);
+
+        request.onerror = err;
+        request.onupgradeneeded = function (e) {
+            var upgradedDb = e.target.result;
+            upgradedDb.createObjectStore("projects", { keyPath: "id", autoIncrement: false });
+            upgradedDb.createObjectStore("timeEntries", { keyPath: "id", autoIncrement: false });
+        };
+
+        // Load the data source with data from the database
+        request.onsuccess = function () {
+            db = request.result;
+
+            _refreshFromDb(db).done(function () {
+                comp(db);
+            }, function (errorEvent) {
+                err(errorEvent);
+            });
+        };
+    });
+
+    var _refreshFromDb = function (db) {
+        return new WinJS.Promise(function (comp, err) {
+            while (storage.projects.pop()) { }
+            while (storage.timeEntries.pop()) { }
+            var transaction = db.transaction(["projects", "timeEntries"]);
+
+            transaction.objectStore("projects").openCursor().onsuccess = function (event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    var project = data.Project.createFromIndexedDbCursor(cursor.value);
+                    storage.projects.push(project);
+                    cursor.continue();
+                };
+            };
+
+            transaction.objectStore("timeEntries").openCursor().onsuccess = function (event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    var timeEntry = data.TimeEntry.createFromIndexedDbCursor(cursor.value);
+                    storage.timeEntries.push(timeEntry);
+                    cursor.continue();
+                };
+            };
+
+            transaction.oncomplete = comp;
+            transaction.onerror = err;
+        });
+    }
+
+    var _getObjectStore = function (db, objectStoreName, mode) {
+        mode = mode || "readonly";
+
+        return new WinJS.Promise(function (comp, err) {
+
+            var transaction = db.transaction(objectStoreName, mode);
+
+            comp(transaction.objectStore(objectStoreName));
+
+            transaction.onerror = err;
+        });
+    };
+
+    var _saveObject = function (objectStore, object) {
+        return new WinJS.Promise(function (comp, err) {
+            var request = objectStore.put(object);
+            request.onsuccess = comp;
+            request.onerror = err;
+        });
+    };
+
+    var _deleteObject = function (objectStore, id) {
+        return new WinJS.Promise(function (comp, err) {
+            var request = objectStore.delete(id);
+            request.onsuccess = comp;
+            request.onerror = err;
+        });
+    };
+
     var storage = WinJS.Class.define(
         function constructor() {/* only static members in this class */ },
         { /* only static members in this class */ },
@@ -114,18 +198,44 @@
             if (!existing) {
                 storage.projects.push(p);
             }
+
+            return _openDb.then(function (db) {
+                return _getObjectStore(db, "projects", "readwrite");
+            }).then(function (store) {
+                return _saveObject(store, p);
+            });
         }
+
+        return WinJS.Promise.as();
     };
 
-    storage.projects.delete = function (p) {
+    storage.projects.delete = function (p, permanent) {
+        permanent = permanent || false;
+
         if (p && p.id) {
-            var existing = storage.projects.getById(p.id);
-            if (existing) {
-                existing.status = Clok.Data.ProjectStatuses.Deleted;
-                storage.projects.save(existing);
+            if (!permanent) {
+                var existing = storage.projects.getById(p.id);
+                if (existing) {
+                    // soft delete = default
+                    existing.status = data.ProjectStatuses.Deleted;
+                    return storage.projects.save(existing);
+                }
+            } else {
+                var index = this.indexOf(p);
+                if (index >= 0) {
+                    this.splice(index, 1);
+
+                    return _openDb.then(function (db) {
+                        return _getObjectStore(db, "projects", "readwrite");
+                    }).then(function (store) {
+                        return _deleteObject(store, p.id);
+                    });
+                }
             }
         }
+        return WinJS.Promise.as();
     };
+
 
 
 
@@ -149,7 +259,7 @@
                                 if (te.projectId !== Number(projectId)) return false;
                             }
 
-                            if (te.project.status !== Clok.Data.ProjectStatuses.Active) return false;
+                            if (!te.project || te.project.status !== data.ProjectStatuses.Active) return false;
 
                             return true;
                         });
@@ -186,34 +296,36 @@
             if (!existing) {
                 storage.timeEntries.push(te);
             }
+
+            return _openDb.then(function (db) {
+                return _getObjectStore(db, "timeEntries", "readwrite");
+            }).then(function (store) {
+                return _saveObject(store, te);
+            });
         }
+
+        return WinJS.Promise.as();
     };
 
     storage.timeEntries.delete = function (te) {
-        var cancelled = false;
+        if (te && te.id) {
+            var index = this.indexOf(te);
+            if (index >= 0) {
+                this.splice(index, 1);
 
-        var delPromise = new WinJS.Promise(function (complete, error) {
-            setTimeout(function () {
-                try {
-                    if (te && te.id) {
-                        var index = this.indexOf(te);
-                        if (!cancelled && index >= 0) {
-                            this.splice(index, 1);
-                        }
-                    }
-                    complete();
-                } catch (e) {
-                    error(e);
-                }
-            }.bind(this), 100);
-        }.bind(this),
-        function oncancel(arg) {
-            cancelled = true;
-        }.bind(this));
+                return _openDb.then(function (db) {
+                    return _getObjectStore(db, "timeEntries", "readwrite");
+                }).then(function (store) {
+                    return _deleteObject(store, te.id);
+                });
+            }
+        }
 
-        return delPromise;
-        //return WinJS.Promise.timeout(20, delPromise);
+        return WinJS.Promise.as();
     };
+
+
+
 
 
 
@@ -223,101 +335,3 @@
     });
 
 })();
-
-
-// add temp data
-(function () {
-    var createProject = function (name, projectNumber, clientName, id, status) {
-        var newProject = new Clok.Data.Project();
-        newProject.id = id;
-        newProject.name = name;
-        newProject.projectNumber = projectNumber;
-        newProject.clientName = clientName;
-        newProject.status = status || newProject.status;
-
-        return newProject;
-    }
-
-    var projects = Clok.Data.Storage.projects;
-
-    var name1 = "Windows Store App";
-    var name2 = "Mobile Website";
-    var name3 = "Website Redesign";
-    var name4 = "Employee Portal";
-
-    var client1 = "Northwind Traders";
-    var client2 = "Contoso Ltd.";
-    var client3 = "AdventureWorks Cycles";
-    var client4 = "TailSpin Toys";
-    var client5 = "A. Datum Corporation";
-    var client6 = "Woodgrove Bank";
-    var client7 = "Fabrikam, Inc.";
-
-    projects.push(createProject(name1, "2012-0003", client1, 1368296808745, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name2, "2012-0008", client2, 1368296808746, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name3, "2012-0011", client1, 1368296808747, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name1, "2012-0017", client3, 1368296808748));
-    projects.push(createProject(name3, "2012-0018", client4, 1368296808749, Clok.Data.ProjectStatuses.Deleted));
-    projects.push(createProject(name1, "2012-0023", client5, 1368296808750, Clok.Data.ProjectStatuses.Deleted));
-    projects.push(createProject(name3, "2012-0027", client6, 1368296808751, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name3, "2012-0030", client7, 1368296808752, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name3, "2012-0033", client3, 1368296808753));
-    projects.push(createProject(name2, "2012-0039", client1, 1368296808754, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name4, "2012-0042", client3, 1368296808755, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name3, "2012-0050", client5, 1368296808756, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name1, "2012-0053", client4, 1368296808757, Clok.Data.ProjectStatuses.Inactive));
-    projects.push(createProject(name2, "2013-0012", client5, 1368296808758));
-    projects.push(createProject(name2, "2013-0013", client7, 1368296808759));
-    projects.push(createProject(name4, "2013-0016", client1, 1368296808760, Clok.Data.ProjectStatuses.Deleted));
-    projects.push(createProject(name4, "2013-0017", client6, 1368296808761));
-    projects.push(createProject(name3, "2013-0018", client2, 1368296808762));
-})();
-
-
-// add temp time entry data
-(function () {
-    var createTime = function (id, projectId, dateWorked, elapsedSeconds, notes) {
-        var newTimeEntry = new Clok.Data.TimeEntry();
-        newTimeEntry.id = id;
-        newTimeEntry.projectId = projectId;
-        newTimeEntry.dateWorked = dateWorked;
-        newTimeEntry.elapsedSeconds = elapsedSeconds;
-        newTimeEntry.notes = notes;
-
-        return newTimeEntry;
-    }
-
-    var time = Clok.Data.Storage.timeEntries;
-
-    var date1 = (new Date()).addMonths(-1).addDays(1);
-    var date2 = (new Date()).addMonths(-1).addDays(2);
-    var date3 = (new Date()).addMonths(-1).addDays(3);
-    var date4 = (new Date()).addMonths(-1).addDays(4);
-    var date5 = (new Date()).addMonths(-1).addDays(5);
-
-    var timeId = 1369623987766;
-    time.push(createTime(timeId++, 1368296808757, date1, 10800, "Lorem ipsum dolor sit."));
-    time.push(createTime(timeId++, 1368296808757, date2, 7200, "Amet, consectetur adipiscing."));
-    time.push(createTime(timeId++, 1368296808757, date3, 7200, "Praesent congue euismod diam."));
-    time.push(createTime(timeId++, 1368296808760, date2, 7200, "Curabitur euismod mollis."));
-    time.push(createTime(timeId++, 1368296808759, date1, 7200, "Donec sit amet porttitor."));
-    time.push(createTime(timeId++, 1368296808758, date3, 8100, "Praesent congue euismod diam."));
-    time.push(createTime(timeId++, 1368296808758, date2, 14400, "Curabitur euismod mollis."));
-    time.push(createTime(timeId++, 1368296808761, date4, 7200, "Donec sit amet porttitor."));
-    time.push(createTime(timeId++, 1368296808748, date3, 7200, "Praesent congue euismod diam."));
-    time.push(createTime(timeId++, 1368296808748, date2, 7200, "Curabitur euismod mollis."));
-    time.push(createTime(timeId++, 1368296808748, date1, 7200, "Donec sit amet porttitor."));
-    time.push(createTime(timeId++, 1368296808746, date4, 8100, "Praesent congue euismod diam."));
-    time.push(createTime(timeId++, 1368296808753, date2, 14400, "Curabitur euismod mollis."));
-    time.push(createTime(timeId++, 1368296808753, date1, 7200, "Donec sit amet porttitor."));
-    time.push(createTime(timeId++, 1368296808761, date5, 10800, "Donec semper risus nec."));
-})();
-
-
-
-
-
-
-
-
-

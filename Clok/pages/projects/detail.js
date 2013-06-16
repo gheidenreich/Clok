@@ -11,9 +11,9 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-            this.configureAppBar(options && options.id);
 
             this.currProject = storage.projects.getById(options && options.id) || new Clok.Data.Project();
+            this.configureAppBar(options && options.id);
             var form = document.getElementById("projectDetailForm");
             WinJS.Binding.processAll(form, this.currProject);
 
@@ -22,6 +22,7 @@
             saveProjectCommand.onclick = this.saveProjectCommand_click.bind(this);
             deleteProjectCommand.onclick = this.deleteProjectCommand_click.bind(this);
             goToTimeEntriesCommand.onclick = this.goToTimeEntriesCommand_click.bind(this);
+            goToDirectionsCommand.onclick = this.goToDirectionsCommand_click.bind(this);
         },
 
         unload: function () {
@@ -67,6 +68,16 @@
             }
         },
 
+        goToDirectionsCommand_click: function (e) {
+            if (this.currProject
+                    && this.currProject.id
+                    && this.currProject.isAddressSpecified()) {
+                WinJS.Navigation.navigate("/pages/projects/directions.html", {
+                    project: this.currProject
+                });
+            }
+        },
+
         populateProjectFromForm: function () {
             this.currProject.name = document.getElementById("projectName").value;
             this.currProject.projectNumber = document.getElementById("projectNumber").value;
@@ -100,6 +111,10 @@
             if (existingId) {
                 deleteProjectCommand.winControl.disabled = false;
                 goToTimeEntriesCommand.winControl.disabled = false;
+
+                if (this.currProject.isAddressSpecified()) {
+                    goToDirectionsCommand.winControl.disabled = false;
+                }
             }
         },
 
