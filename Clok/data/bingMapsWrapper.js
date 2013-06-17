@@ -2,7 +2,7 @@
 (function () {
     "use strict";
 
-    var apikey = "AmbZgXvHcklQ989fB1Gwv8XjkjSRdYqeY8xy1l1jBnWnl9O_PXlnlh8skWYwWJhA";
+    var apikey = "PUT_YOUR_KEY_HERE";
     var apiEndpoint = "http://dev.virtualearth.net/REST/v1/";
     var xhrTimeout = 2000;
 
