@@ -2,12 +2,9 @@
 (function () {
     "use strict";
 
-<<<<<<< HEAD
     var appData = Windows.Storage.ApplicationData.current;
     var roamingSettings = appData.roamingSettings;
 
-=======
->>>>>>> 08e75d746c41d4f85df054cd676df8b313f21599
     var apikey = "PUT_YOUR_KEY_HERE";
     var apiEndpoint = "http://dev.virtualearth.net/REST/v1/";
     var xhrTimeout = roamingSettings.values["bingMapsTimeout"];
