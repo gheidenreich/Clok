@@ -42,7 +42,7 @@
             transaction.objectStore("projects").openCursor().onsuccess = function (event) {
                 var cursor = event.target.result;
                 if (cursor) {
-                    var project = data.Project.createFromIndexedDbCursor(cursor.value);
+                    var project = data.Project.createFromDeserialized(cursor.value);
                     storage.projects.push(project);
                     cursor.continue();
                 };
@@ -51,7 +51,7 @@
             transaction.objectStore("timeEntries").openCursor().onsuccess = function (event) {
                 var cursor = event.target.result;
                 if (cursor) {
-                    var timeEntry = data.TimeEntry.createFromIndexedDbCursor(cursor.value);
+                    var timeEntry = data.TimeEntry.createFromDeserialized(cursor.value);
                     storage.timeEntries.push(timeEntry);
                     cursor.continue();
                 };
@@ -96,6 +96,10 @@
         { /* only static members in this class */ },
         {
             // static members
+
+            initialize: function () {
+                return _openDb;
+            },
 
             projects: new WinJS.Binding.List([]),
             clients: {

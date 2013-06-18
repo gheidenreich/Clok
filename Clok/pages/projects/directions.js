@@ -5,18 +5,41 @@
 (function () {
     "use strict";
 
+    var app = WinJS.Application;
+    var appData = Windows.Storage.ApplicationData.current;
+    var roamingSettings = appData.roamingSettings;
+
     var maps = Clok.Data.BingMaps;
 
     WinJS.UI.Pages.define("/pages/projects/directions.html", {
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
+            fromLocation.value = app.sessionState.directionsFromLocation || "";
             this.populateDestination(options);
             getDirectionsButton.onclick = this.getDirectionsButton_click.bind(this);
+
+            this.appData_datachanged_boundThis = this.appData_datachanged.bind(this);
+            appData.addEventListener("datachanged", this.appData_datachanged_boundThis);
+
+            this.app_checkpoint_boundThis = this.checkpoint.bind(this);
+            app.addEventListener("checkpoint", this.app_checkpoint_boundThis);
+
+            fromLocation.onchange = function (e) {
+                app.sessionState.directionsFromLocation = fromLocation.value;
+            }.bind(this);
         },
 
         unload: function () {
             // TODO: Respond to navigations away from this page.
+            appData.removeEventListener("datachanged", this.appData_datachanged_boundThis);
+
+            app.sessionState.directionsFromLocation = null;
+            app.removeEventListener("checkpoint", this.app_checkpoint_boundThis);
+        },
+
+        checkpoint: function () {
+            app.sessionState.directionsFromLocation = fromLocation.value;
         },
 
         updateLayout: function (element, viewState, lastViewState) {
@@ -42,8 +65,7 @@
         },
 
         getDirectionsButton_click: function (e) {
-
-            if (fromLocation.value) {
+            if (fromLocation && fromLocation.value && this.dest) {
 
                 maps.getDirections(fromLocation.value, this.dest)
                     .then(function (directions) {
@@ -61,14 +83,12 @@
                                 = directions.itineraryItems.dataSource;
 
                             directionsListView.winControl.forceLayout();
-
                         } else {
                             this.showDirectionResults(false);
                         }
                     }.bind(this), function (errorEvent) {
                         this.showDirectionResults(false);
                     }.bind(this));
-
             } else {
                 this.showDirectionResults(false);
             }
@@ -82,6 +102,10 @@
                 WinJS.Utilities.addClass(directionsSuccess, "hidden");
                 WinJS.Utilities.removeClass(directionsError, "hidden");
             }
+        },
+        
+        appData_datachanged: function (args) {
+            this.getDirectionsButton_click();
         },
     });
 })();

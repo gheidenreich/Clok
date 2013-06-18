@@ -5,14 +5,16 @@
 (function () {
     "use strict";
 
+    var app = WinJS.Application;
+    var data = Clok.Data;
     var storage = Clok.Data.Storage;
 
     WinJS.UI.Pages.define("/pages/projects/detail.html", {
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
+            this.setCurrentProject(options);
 
-            this.currProject = storage.projects.getById(options && options.id) || new Clok.Data.Project();
             this.configureAppBar(options && options.id);
             var form = document.getElementById("projectDetailForm");
             WinJS.Binding.processAll(form, this.currProject);
@@ -23,10 +25,31 @@
             deleteProjectCommand.onclick = this.deleteProjectCommand_click.bind(this);
             goToTimeEntriesCommand.onclick = this.goToTimeEntriesCommand_click.bind(this);
             goToDirectionsCommand.onclick = this.goToDirectionsCommand_click.bind(this);
+
+            this.app_checkpoint_boundThis = this.checkpoint.bind(this);
+            app.addEventListener("checkpoint", this.app_checkpoint_boundThis);
+
+            WinJS.Utilities.query("input, textarea, select")
+                .listen("change", function (e) {
+                    this.populateProjectFromForm();
+                    app.sessionState.currProject = this.currProject;
+                }.bind(this));
+
+            projectStatus.addEventListener("change", function (e) {
+                    this.populateProjectFromForm();
+                    app.sessionState.currProject = this.currProject;
+                }.bind(this));
         },
 
         unload: function () {
             // TODO: Respond to navigations away from this page.
+            app.sessionState.currProject = null;
+            app.removeEventListener("checkpoint", this.app_checkpoint_boundThis);
+        },
+
+        checkpoint: function () {
+            this.populateProjectFromForm();
+            app.sessionState.currProject = this.currProject;
         },
 
         updateLayout: function (element, viewState, lastViewState) {
@@ -76,6 +99,22 @@
                     project: this.currProject
                 });
             }
+        },
+
+        setCurrentProject: function (options) {
+            var sessionProject = (app.sessionState.currProject)
+                ? data.Project.createFromDeserialized(app.sessionState.currProject)
+                : null;
+
+            if (options && options.id && sessionProject && options.id !== sessionProject.id) {
+                sessionProject = null;
+            }
+
+            this.currProject = sessionProject
+                || storage.projects.getById(options && options.id)
+                || new Clok.Data.Project();
+
+            app.sessionState.currProject = this.currProject;
         },
 
         populateProjectFromForm: function () {

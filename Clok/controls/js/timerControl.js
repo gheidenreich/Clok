@@ -72,6 +72,9 @@
                     this._intervalId = setInterval(this._updateTimer.bind(this), 250);
                     this.startStops[this.startStops.length] = { startTime: (new Date()).getTime() };
                     this.dispatchEvent("start", {});
+                } else if (this._intervalId <= 0) {
+                    // timer is running, but not updating yet
+                    this._intervalId = setInterval(this._updateTimer.bind(this), 250);
                 }
             },
 
