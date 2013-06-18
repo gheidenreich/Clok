@@ -6,6 +6,9 @@
 (function () {
     "use strict";
 
+    var appData = Windows.Storage.ApplicationData.current;
+    var localSettings = appData.localSettings;
+
     var nav = WinJS.Navigation;
     var storage = Clok.Data.Storage;
 
@@ -13,22 +16,24 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-            this.initializeMenuPointerAnimations();
 
-            toggleTimerMenuItem.onclick = this.toggleTimerMenuItem_click.bind(this);
+            storage.initialize().done(function () {
+                this.initializeMenuPointerAnimations();
+                this.bindListOfProjects();
+                this.setDashboardStateFromSettings();
+                this.setupTimerRelatedControls();
 
-            this.bindListOfProjects();
-            project.onchange = this.project_change.bind(this);
-            editProjectButton.onclick = this.editProjectButton_click.bind(this);
-            saveTimeButton.onclick = this.saveTimeButton_click.bind(this);
-            discardTimeButton.onclick = this.discardTimeButton_click.bind(this);
+                toggleTimerMenuItem.onclick = this.toggleTimerMenuItem_click.bind(this);
+                project.onchange = this.project_change.bind(this);
+                timeNotes.onchange = this.timeNotes_change.bind(this);
+                editProjectButton.onclick = this.editProjectButton_click.bind(this);
+                saveTimeButton.onclick = this.saveTimeButton_click.bind(this);
+                discardTimeButton.onclick = this.discardTimeButton_click.bind(this);
 
-            this.setupTimerRelatedControls();
+                projectsMenuItem.onclick = this.projectsMenuItem_click.bind(this);
+                timesheetMenuItem.onclick = this.timesheetMenuItem_click.bind(this);
+            }.bind(this));
 
-            projectsMenuItem.onclick = this.projectsMenuItem_click.bind(this);
-            timesheetMenuItem.onclick = this.timesheetMenuItem_click.bind(this);
-
-            //elapsedTimeClock.winControl.initialCounterValue = [3, 21, 09];
         },
 
 
@@ -73,6 +78,11 @@
 
         project_change: function (e) {
             this.enableOrDisableButtons();
+            this.saveDashboardStateToSettings();
+        },
+
+        timeNotes_change: function (e) {
+            this.saveDashboardStateToSettings();
         },
 
         editProjectButton_click: function (e) {
@@ -124,6 +134,7 @@
 
             WinJS.Promise.join([transitionPromise, savePromise]).done(function () {
                 self.resetTimer();
+                self.removeDashboardStateFromSettings();
             });
         },
 
@@ -157,12 +168,16 @@
                         from: '#ffffff',
                         to: '#ff0000'
                     }
-                ]).done(function () { self.resetTimer(); });
+                ]).done(function () {
+                    self.resetTimer();
+                    self.removeDashboardStateFromSettings();
+                });
         },
 
         toggleTimer: function () {
             this.timerIsRunning = !this.timerIsRunning;
             this.setupTimerRelatedControls();
+            this.saveDashboardStateToSettings();
         },
 
         resetTimer: function () {
@@ -185,16 +200,26 @@
 
         setupTimerRelatedControls: function () {
             if (this.timerIsRunning) {
-                elapsedTimeClock.winControl.start();
-                timerImage.src = "/images/Clock-Running.png";
-                timerTitle.innerText = "Stop Clok";
+                this.startTimer();
             } else {
-                elapsedTimeClock.winControl.stop();
-                timerImage.src = "/images/Clock-Stopped.png";
-                timerTitle.innerText = "Start Clok";
+                this.stopTimer();
             }
 
             this.enableOrDisableButtons();
+        },
+
+        startTimer: function () {
+            elapsedTimeClock.winControl.start();
+            timerImage.src = "/images/Clock-Running.png";
+            timerTitle.innerText = "Stop Clok";
+            this.timerIsRunning = true;
+        },
+
+        stopTimer: function () {
+            elapsedTimeClock.winControl.stop();
+            timerImage.src = "/images/Clock-Stopped.png";
+            timerTitle.innerText = "Start Clok";
+            this.timerIsRunning = false;
         },
 
         enableOrDisableButtons: function () {
@@ -217,8 +242,47 @@
             nav.navigate("/pages/timeEntries/list.html");
         },
 
+        saveDashboardStateToSettings: function () {
+            var state = JSON.stringify({
+                startStops: elapsedTimeClock.winControl.startStops,
+                projectId: Number(project.options[project.selectedIndex].value),
+                timeNotes: timeNotes.value,
+            });
 
+            localSettings.values["dashboardState"] = state;
+        },
+
+        removeDashboardStateFromSettings: function () {
+            localSettings.values.remove("dashboardState");
+        },
+
+        setDashboardStateFromSettings: function () {
+            var state = localSettings.values["dashboardState"];
+
+            if (state) {
+                state = JSON.parse(state);
+
+                elapsedTimeClock.winControl.startStops = state.startStops;
+                project.selectedIndex = this.getIndexOfProjectId(state.projectId);
+                timeNotes.value = state.timeNotes;
+
+                if (elapsedTimeClock.winControl.isRunning) {
+                    this.startTimer();
+                }
+            }
+        },
+
+        getIndexOfProjectId: function (projectId) {
+            var index = 0;
+
+            for (var i = 0; i < project.options.length; i++) {
+                if (!isNaN(project.options[i].value) && Number(project.options[i].value) === projectId) {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index;
+        }
     });
-
-
 })();

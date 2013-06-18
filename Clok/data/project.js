@@ -31,7 +31,7 @@
             }
         },
         {
-            createFromIndexedDbCursor: function (value) {
+            createFromDeserialized: function (value) {
                 var project = new Clok.Data.Project();
 
                 project.id = value.id;

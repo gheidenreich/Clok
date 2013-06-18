@@ -2,9 +2,15 @@
 (function () {
     "use strict";
 
-    var apikey = "AmbZgXvHcklQ989fB1Gwv8XjkjSRdYqeY8xy1l1jBnWnl9O_PXlnlh8skWYwWJhA";
+<<<<<<< HEAD
+    var appData = Windows.Storage.ApplicationData.current;
+    var roamingSettings = appData.roamingSettings;
+
+=======
+>>>>>>> 08e75d746c41d4f85df054cd676df8b313f21599
+    var apikey = "PUT_YOUR_KEY_HERE";
     var apiEndpoint = "http://dev.virtualearth.net/REST/v1/";
-    var xhrTimeout = 2000;
+    var xhrTimeout = roamingSettings.values["bingMapsTimeout"];
 
     var mapsClass = WinJS.Class.define(
         function constructor() { /* empty constructor */ },
@@ -15,7 +21,7 @@
             },
 
             getDirections: function (start, end) {
-                var distanceUnit = "mi";
+                var distanceUnit = roamingSettings.values["bingDistanceUnit"];
 
                 var routeRequest = apiEndpoint + "Routes?"
                     + "wp.0=" + start
@@ -85,12 +91,22 @@
     });
 
     var travelDistanceConverter = WinJS.Binding.converter(function (distance) {
-        if (distance >= 5) {
-            return distance.toFixed(0) + " mi";
-        } else if (distance >= 0.2) {
-            return distance.toFixed(2) + " mi";
+        if (roamingSettings.values["bingDistanceUnit"] === "mi") {
+            if (distance >= 5) {
+                return distance.toFixed(0) + " mi";
+            } else if (distance >= 0.2) {
+                return distance.toFixed(2) + " mi";
+            } else {
+                return (distance * 5280).toFixed(0) + " ft";
+            }
         } else {
-            return (distance * 5280).toFixed(0) + " ft";
+            if (distance >= 5) {
+                return distance.toFixed(0) + " km";
+            } else if (distance >= 0.9) {
+                return distance.toFixed(2) + " km";
+            } else {
+                return (distance * 1000).toFixed(0) + " m";
+            }
         }
     });
 

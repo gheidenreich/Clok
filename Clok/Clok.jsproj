@@ -123,6 +123,7 @@
     <Content Include="settings\IDBExplorer\table5.png" />
     <Content Include="settings\IDBExplorer\table6.png" />
     <Content Include="settings\IDBExplorer\throbber.gif" />
+    <Content Include="settings\options.js" />
     <Content Include="settings\options.html" />
     <None Include="Clok_TemporaryKey.pfx" />
   </ItemGroup>

@@ -55,7 +55,7 @@
                 return newTimeEntry;
             },
 
-            createFromIndexedDbCursor: function (value) {
+            createFromDeserialized: function (value) {
                 return timeEntryClass.create(
                     value.id,
                     value._projectId,
