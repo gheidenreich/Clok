@@ -24,6 +24,7 @@
             saveProjectCommand.onclick = this.saveProjectCommand_click.bind(this);
             deleteProjectCommand.onclick = this.deleteProjectCommand_click.bind(this);
             goToTimeEntriesCommand.onclick = this.goToTimeEntriesCommand_click.bind(this);
+            goToDocumentsCommand.onclick = this.goToDocumentsCommand_click.bind(this);
             goToDirectionsCommand.onclick = this.goToDirectionsCommand_click.bind(this);
 
             this.app_checkpoint_boundThis = this.checkpoint.bind(this);
@@ -91,6 +92,12 @@
             }
         },
 
+        goToDocumentsCommand_click: function (e) {
+            if (this.currProject && this.currProject.id) {
+                WinJS.Navigation.navigate("/pages/documents/library.html", { projectId: this.currProject.id });
+            }
+        },
+
         goToDirectionsCommand_click: function (e) {
             if (this.currProject
                     && this.currProject.id
@@ -150,6 +157,7 @@
             if (existingId) {
                 deleteProjectCommand.winControl.disabled = false;
                 goToTimeEntriesCommand.winControl.disabled = false;
+                goToDocumentsCommand.winControl.disabled = false;
 
                 if (this.currProject.isAddressSpecified()) {
                     goToDirectionsCommand.winControl.disabled = false;

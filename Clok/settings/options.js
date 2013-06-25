@@ -20,14 +20,17 @@
 
             bingMapsDistanceUnitToggle.onchange = this.bingMapsDistanceUnitToggle_change;
             indexedDbHelperToggle.onchange = this.indexedDbHelperToggle_change;
+
+            saveBackupButton.onclick = this.saveBackupButton_click;
+            backupPath.innerText = appData.localFolder.path + "\\backups";
         },
 
 
-        initializeSettingsControls: function() {
+        initializeSettingsControls: function () {
             clockSecondsToggle.winControl.checked =
                 roamingSettings.values["clockSeconds"];
 
-            clockModeToggle.winControl.checked = 
+            clockModeToggle.winControl.checked =
                 roamingSettings.values["clockMode"] === Clok.UI.ClockModes.CurrentTime24;
 
             switch (roamingSettings.values["bingMapsTimeout"]) {
@@ -41,10 +44,10 @@
                     bingMapsTimeout_2000.checked = true;
             }
 
-            bingMapsDistanceUnitToggle.winControl.checked = 
+            bingMapsDistanceUnitToggle.winControl.checked =
                 roamingSettings.values["bingDistanceUnit"] === "km";
 
-            indexedDbHelperToggle.winControl.checked = 
+            indexedDbHelperToggle.winControl.checked =
                 roamingSettings.values["enableIndexedDbHelper"];
 
         },
@@ -80,8 +83,48 @@
             roamingSettings.values["enableIndexedDbHelper"] =
                 (indexedDbHelperToggle.winControl.checked);
         },
-    });
 
+
+        saveBackupButton_click: function (e) {
+            var dateFormatString = "{year.full}{month.integer(2)}{day.integer(2)}"
+                + "-{hour.integer(2)}{minute.integer(2)}{second.integer(2)}";
+            var clockIdentifiers = Windows.Globalization.ClockIdentifiers;
+
+            var formatting = Windows.Globalization.DateTimeFormatting;
+            var formatterTemplate = new formatting.DateTimeFormatter(dateFormatString);
+            var formatter = new formatting.DateTimeFormatter(formatterTemplate.patterns[0],
+                        formatterTemplate.languages,
+                        formatterTemplate.geographicRegion,
+                        formatterTemplate.calendar,
+                        clockIdentifiers.twentyFourHour);
+
+            var filename = formatter.format(new Date()) + ".json";
+
+            var openIfExists = Windows.Storage.CreationCollisionOption.openIfExists;
+
+            appData.localFolder
+                .createFolderAsync("backups", openIfExists)
+                .then(function (folder) {
+                    return folder.createFileAsync(filename, openIfExists);
+                }).done(function (file) {
+
+                    var storage = Clok.Data.Storage;
+
+                    var backupData = {
+                        projects: storage.projects,
+                        timeEntries: storage.timeEntries
+                    };
+                    var contents = JSON.stringify(backupData);
+                    Windows.Storage.FileIO.writeTextAsync(file, contents);
+
+                    backupConfirmation.style.display = "inline";
+                });
+        },
+
+
+    });
 })();
+
+
 
 
