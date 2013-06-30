@@ -20,6 +20,7 @@
             WinJS.Binding.processAll(form, this.currProject);
 
             this.bindClients();
+            this.configureLayout();
 
             saveProjectCommand.onclick = this.saveProjectCommand_click.bind(this);
             deleteProjectCommand.onclick = this.deleteProjectCommand_click.bind(this);
@@ -55,10 +56,15 @@
 
         updateLayout: function (element, viewState, lastViewState) {
             /// <param name="element" domElement="true" />
+            this.configureLayout();
+        },
 
-            // TODO: Respond to changes in viewState.
-            var viewStates = Windows.UI.ViewManagement.ApplicationViewState;
-            if (viewState === viewStates.snapped) {
+
+
+        configureLayout: function () {
+            var viewState = Windows.UI.ViewManagement.ApplicationView.value;
+
+            if (viewState === Windows.UI.ViewManagement.ApplicationViewState.snapped) {
                 startDate.winControl.monthPattern = "{month.abbreviated}";
                 dueDate.winControl.monthPattern = "{month.abbreviated}";
             } else {
@@ -66,6 +72,7 @@
                 dueDate.winControl.monthPattern = "{month.full}";
             }
         },
+
 
         saveProjectCommand_click: function (e) {
             // don't set the required attribute until the first submit attempt

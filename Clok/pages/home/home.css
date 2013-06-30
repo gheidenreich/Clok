@@ -149,12 +149,126 @@
 @media screen and (-ms-view-state: snapped) {
     .homepage section[role=main] {
         margin-left: 20px;
+        display: block;
+    }
+
+    .homepage #mainMenu {
+        width: 212px;
+        display: block;
+    }
+
+    .homepage .primaryMenuItem {
+        height: 204px;
+        width: 250px;
+        -ms-grid-rows: 1fr 35px;
+    }
+
+        .homepage .primaryMenuItem .mainMenuItem-image {
+            height: 191px;
+            width: 191px;
+            margin: auto;
+        }
+
+        .homepage .primaryMenuItem .mainMenuItem-overlay .mainMenuItem-title {
+            font-size: 1.25em;
+        }
+
+    /* the smaller menu buttons */
+    .homepage .secondaryMenuItem {
+        height: 32px;
+        width: 250px;
+        -ms-grid-rows: 1fr;
+    }
+
+        .homepage .secondaryMenuItem .mainMenuItem-image {
+            display: none;
+        }
+
+        .homepage .secondaryMenuItem .mainMenuItem-overlay {
+            -ms-grid-row: 1;
+            padding: 6px 15px;
+            background: inherit;
+        }
+
+        .homepage .secondaryMenuItem#cameraMenuItem,
+        .homepage .secondaryMenuItem#timesheetMenuItem {
+            display: none;
+        }
+
+
+    .homepage #timeEntry {
+        width: 250px;
+    }
+
+        .homepage #timeEntry label {
+            display: block;
+            font-size: 1em;
+        }
+
+    .homepage #elapsedTime {
+        padding-bottom: 5px;
+    }
+
+        .homepage #elapsedTime #elapsedTimeClock {
+            font-size: 4em;
+            font-weight: 200;
+        }
+
+    .homepage #editProjectButton {
+        display: none;
+    }
+
+    .homepage #saveTimeButton,
+    .homepage #discardTimeButton {
+        display: inline;
+    }
+
+
+    .homepage #project {
+        width: 250px;
+    }
+
+    .homepage #timeNotes {
+        min-width: 240px;
+        width: 240px;
+        height: 50px;
+    }
+
+    .homepage section[role=main] #rightPane {
+        display: none;
     }
 }
 
-@media screen and (-ms-view-state: portrait) {
+@media screen and (-ms-view-state: filled) {
+
     .homepage section[role=main] {
         margin-left: 100px;
+    }
+
+        .homepage section[role=main] #rightPane {
+            display: none;
+        }
+}
+
+@media screen and (-ms-view-state: fullscreen-portrait) {
+
+    .homepage section[role=main] {
+        margin-left: 100px;
+        display: block;
+    }
+
+        .homepage section[role=main] #rightPane {
+            display: none;
+        }
+
+    .homepage #mainMenu {
+        height: 424px;
+        -ms-flex-direction: column;
+    }
+
+    .homepage #elapsedTime #elapsedTimeClock {
+        font-size: 6em;
+        font-weight: 200;
     }
 }
 

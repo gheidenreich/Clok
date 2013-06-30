@@ -3,6 +3,9 @@
     margin-right: 120px;
 }
 
+.hidden {
+    display: none;
+}
 
 #filters {
     height: 30px;
@@ -51,7 +54,7 @@
 }
 
 #semanticZoom {
-    height: calc(100% - 30px);
+    height: calc(100% - (30px + 88px)); /* filter buttons + app bar */
     width: calc(100% - 120px);
 }
 
@@ -66,14 +69,20 @@
 
 
 
-
-
-
-
 @media screen and (-ms-view-state: snapped) {
     .list section[role=main] {
         margin-left: 20px;
         margin-right: 20px;
+    }
+
+    #semanticZoom {
+        margin-top: 30px;
+        height: calc(100% - (60px + 88px)); /* filter buttons + app bar */
+        width: calc(100% - 20px);
+    }
+
+    [data-class=listViewItem] {
+        width: 100%;
     }
 }
 

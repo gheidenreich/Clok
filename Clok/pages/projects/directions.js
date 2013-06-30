@@ -28,6 +28,8 @@
             fromLocation.onchange = function (e) {
                 app.sessionState.directionsFromLocation = fromLocation.value;
             }.bind(this);
+
+            Clok.Utilities.DisableInSnappedView();
         },
 
         unload: function () {
@@ -45,7 +47,7 @@
         updateLayout: function (element, viewState, lastViewState) {
             /// <param name="element" domElement="true" />
 
-            // TODO: Respond to changes in viewState.
+            Clok.Utilities.DisableInSnappedView();
         },
 
         populateDestination: function (options) {

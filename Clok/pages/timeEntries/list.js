@@ -1,4 +1,5 @@
-﻿/// <reference path="/js/extensions.js" />
+﻿/// <reference path="/js/utilities.js" />
+/// <reference path="/js/extensions.js" />
 /// <reference path="/data/storage.js" />
 /// <reference path="/data/project.js" />
 /// <reference path="/data/timeEntry.js" />
@@ -14,7 +15,6 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-
             this.bindListOfProjects(projectId);
             this.bindListOfProjects(filterProjectId);
 
@@ -33,6 +33,7 @@
             graphTimeEntriesCommand.winControl.onclick = this.graphTimeEntriesCommand_click.bind(this);
             deleteTimeEntriesCommand.winControl.onclick = this.deleteTimeEntriesCommand_click.bind(this);
 
+            Clok.Utilities.DisableInSnappedView();
         },
 
         unload: function () {
@@ -41,8 +42,7 @@
 
         updateLayout: function (element, viewState, lastViewState) {
             /// <param name="element" domElement="true" />
-
-            // TODO: Respond to changes in viewState.
+            Clok.Utilities.DisableInSnappedView();
         },
 
 

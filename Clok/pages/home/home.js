@@ -17,22 +17,20 @@
         // populates the page elements with the app's data.
         ready: function (element, options) {
 
-            storage.initialize().done(function () {
-                this.initializeMenuPointerAnimations();
-                this.bindListOfProjects();
-                this.setDashboardStateFromSettings();
-                this.setupTimerRelatedControls();
+            this.initializeMenuPointerAnimations();
+            this.bindListOfProjects();
+            this.setDashboardStateFromSettings();
+            this.setupTimerRelatedControls();
 
-                toggleTimerMenuItem.onclick = this.toggleTimerMenuItem_click.bind(this);
-                project.onchange = this.project_change.bind(this);
-                timeNotes.onchange = this.timeNotes_change.bind(this);
-                editProjectButton.onclick = this.editProjectButton_click.bind(this);
-                saveTimeButton.onclick = this.saveTimeButton_click.bind(this);
-                discardTimeButton.onclick = this.discardTimeButton_click.bind(this);
+            toggleTimerMenuItem.onclick = this.toggleTimerMenuItem_click.bind(this);
+            project.onchange = this.project_change.bind(this);
+            timeNotes.onchange = this.timeNotes_change.bind(this);
+            editProjectButton.onclick = this.editProjectButton_click.bind(this);
+            saveTimeButton.onclick = this.saveTimeButton_click.bind(this);
+            discardTimeButton.onclick = this.discardTimeButton_click.bind(this);
 
-                projectsMenuItem.onclick = this.projectsMenuItem_click.bind(this);
-                timesheetMenuItem.onclick = this.timesheetMenuItem_click.bind(this);
-            }.bind(this));
+            projectsMenuItem.onclick = this.projectsMenuItem_click.bind(this);
+            timesheetMenuItem.onclick = this.timesheetMenuItem_click.bind(this);
 
         },
 

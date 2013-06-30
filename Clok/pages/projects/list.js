@@ -29,8 +29,7 @@
 
         updateLayout: function (element, viewState, lastViewState) {
             /// <param name="element" domElement="true" />
-
-            // TODO: Respond to changes in viewState.
+            this.configureListViewLayout();
         },
 
         addProjectCommand_click: function (e) {
@@ -48,6 +47,21 @@
             listView.winControl.itemDataSource = this.filteredProjects.dataSource;
             listView.winControl.groupDataSource = this.filteredProjects.groups.dataSource;
             zoomedOutListView.winControl.itemDataSource = this.filteredProjects.groups.dataSource;
+
+            this.configureListViewLayout();
+        },
+
+        configureListViewLayout: function () {
+            var viewState = Windows.UI.ViewManagement.ApplicationView.value;
+
+            if (viewState === Windows.UI.ViewManagement.ApplicationViewState.snapped) {
+                listView.winControl.layout = new WinJS.UI.ListLayout();
+                semanticZoom.winControl.enableButton = false;
+            } else {
+                listView.winControl.layout = new WinJS.UI.GridLayout();
+                zoomedOutListView.winControl.layout = new WinJS.UI.GridLayout();
+                semanticZoom.winControl.enableButton = true;
+            }
         },
 
         allStatusFilter_click: function (e) {

@@ -22,6 +22,7 @@
 
             this.bindProjectLibraryFiles();
             libraryListView.winControl.onselectionchanged = this.libraryListView_selectionChanged.bind(this);
+            this.configureListViewLayout();
 
             openDocumentCommand.winControl.onclick = this.openDocumentCommand_click.bind(this);
             openWithDocumentCommand.winControl.onclick = this.openWithDocumentCommand_click.bind(this);
@@ -38,13 +39,27 @@
         updateLayout: function (element, viewState, lastViewState) {
             /// <param name="element" domElement="true" />
 
-            // TODO: Respond to changes in viewState.
+            this.configureListViewLayout();
         },
+
+
+        configureListViewLayout: function () {
+            var viewState = Windows.UI.ViewManagement.ApplicationView.value;
+
+            if (viewState === Windows.UI.ViewManagement.ApplicationViewState.snapped) {
+                libraryListView.winControl.layout = new WinJS.UI.ListLayout();
+            } else {
+                libraryListView.winControl.layout = new WinJS.UI.GridLayout({ groupHeaderPosition: "top" });
+            }
+
+        },
+
 
         setProjectName: function () {
             if (this.projectId) {
                 var project = storage.projects.getById(this.projectId);
                 projectName.innerText = project.name + " (" + project.clientName + ")";
+                projectName.title = project.name + " (" + project.clientName + ")";
             }
         },
 

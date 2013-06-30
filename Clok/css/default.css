@@ -1,13 +1,39 @@
 ﻿#contenthost {
     height: 100%;
     width: 100%;
-
     background-color: #3399aa;
     background-image: url('/images/background.png');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: 100% calc(100% - 85px);
 }
+
+.hidden {
+    display: none;
+}
+
+#extendedSplash {
+    background-color: #3399aa;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+}
+
+    #extendedSplash #splashImage {
+        position: absolute;
+    }
+
+#snappedNotSupported {
+    background-color: #3399aa;
+    height: 100%;
+    width: 100%;
+    padding-top: 200px;
+    text-align: center;
+}
+
 
 #currentTime {
     font-size: 60pt;
@@ -19,7 +45,6 @@
     top: calc(100% - 85px);
     left: 10px;
 }
-
 
 .fragment {
     /* Define a grid with rows for a banner and a body */
@@ -96,7 +121,9 @@
         }
 }
 
-@media screen and (-ms-view-state: fullscreen-portrait) {
+@media screen and (-ms-view-state: fullscreen-portrait), 
+    screen and (-ms-view-state: filled) {
+
     .fragment header[role=banner] {
         -ms-grid-columns: 100px 1fr;
     }
@@ -105,4 +132,3 @@
             margin-left: 29px;
         }
 }
-

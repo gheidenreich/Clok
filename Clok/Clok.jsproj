@@ -97,6 +97,7 @@
     <Content Include="images\Thumb-Down.png" />
     <Content Include="images\Timesheet-small-sprites.png" />
     <Content Include="images\Timesheet.png" />
+    <Content Include="js\extendedSplash.js" />
     <Content Include="js\lib\flotr2\flotr2.js" />
     <Content Include="js\lib\flotr2\license.txt" />
     <Content Include="js\utilities.js" />

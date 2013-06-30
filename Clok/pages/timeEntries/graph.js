@@ -71,6 +71,8 @@
                 endDate: options.filter.endDate,
                 projectId: options.filter.projectId
             });
+
+            Clok.Utilities.DisableInSnappedView();
         },
 
         unload: function () {
@@ -80,7 +82,7 @@
         updateLayout: function (element, viewState, lastViewState) {
             /// <param name="element" domElement="true" />
 
-            // TODO: Respond to changes in viewState.
+            Clok.Utilities.DisableInSnappedView();
         },
 
 
