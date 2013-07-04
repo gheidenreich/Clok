@@ -7,8 +7,8 @@
         function constructor() {
 
             // define and initialize properties
-            this.id = (new Date()).getTime();
-            this._projectId = -1;
+            this.id = ClokUtilities.Guid.newGuid();
+            this._projectId = "";
             this._dateWorked = (new Date()).removeTimePart();
             this.elapsedSeconds = 0;
             this.notes = "";
@@ -20,7 +20,7 @@
                     return this._projectId;
                 },
                 set: function (value) {
-                    this._projectId = (value && !isNaN(value) && Number(value)) || this._projectId;
+                    this._projectId = (ClokUtilities.Guid.isGuid(value) && value) || this._projectId;
                 }
             },
 

@@ -67,8 +67,8 @@
 
             activeProjects.forEach(function (item) {
                 var option = document.createElement("option");
-                option.text = item.name + " (" + item.projectNumber + ")"; // item.toTemplatedString("{name} ({projectNumber})");
-                option.title = item.clientName; //item.toTemplatedString("{clientName}, {projectNumber}");
+                option.text = item.name + " (" + item.projectNumber + ")";
+                option.title = item.clientName;
                 option.value = item.id;
                 project.appendChild(option);
             });
@@ -84,7 +84,7 @@
         },
 
         editProjectButton_click: function (e) {
-            var id = Number(project.options[project.selectedIndex].value);
+            var id = project.options[project.selectedIndex].value;
             nav.navigate("/pages/projects/detail.html", { id: id });
         },
 
@@ -120,7 +120,7 @@
 
             var savePromise = new WinJS.Promise(function (comp, err, prog) {
                 var timeEntry = new Clok.Data.TimeEntry();
-                timeEntry.projectId = Number(project.options[project.selectedIndex].value);
+                timeEntry.projectId = project.options[project.selectedIndex].value;
                 timeEntry.dateWorked = new Date(elapsedTimeClock.winControl.startStops[0].startTime);
                 timeEntry.elapsedSeconds = elapsedTimeClock.winControl.timerValue;
                 timeEntry.notes = timeNotes.value;
@@ -243,7 +243,7 @@
         saveDashboardStateToSettings: function () {
             var state = JSON.stringify({
                 startStops: elapsedTimeClock.winControl.startStops,
-                projectId: Number(project.options[project.selectedIndex].value),
+                projectId: project.options[project.selectedIndex].value,
                 timeNotes: timeNotes.value,
             });
 
@@ -274,7 +274,7 @@
             var index = 0;
 
             for (var i = 0; i < project.options.length; i++) {
-                if (!isNaN(project.options[i].value) && Number(project.options[i].value) === projectId) {
+                if (ClokUtilities.Guid.isGuid(project.options[i].value) && project.options[i].value === projectId) {
                     index = i;
                     break;
                 }

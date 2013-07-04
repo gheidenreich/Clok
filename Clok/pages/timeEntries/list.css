@@ -23,7 +23,7 @@
 }
 
 #timeEntriesListView {
-    height: 100%;
+    height: calc(100% - 88px);
 }
 
     #timeEntriesListView .win-container {

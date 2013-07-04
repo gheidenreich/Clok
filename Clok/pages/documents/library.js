@@ -79,6 +79,8 @@
         },
 
         bindProjectLibraryFiles: function () {
+            this.initialDocumentCount = 0;
+
             if (this.projectId) {
                 var resizeThumbnail = thumbnailOptions.resizeThumbnail;
                 var singleItem = thumbnailMode.singleItem;
@@ -93,8 +95,10 @@
                         };
 
                         var dataSource = new WinJS.UI.StorageDataSource(fileQuery, dataSourceOptions);
-
+                    
                         dataSource.getCount().then(function (count) {
+                            this.initialDocumentCount = count;
+
                             if (count >= 1) {
                                 libraryListView.winControl.itemDataSource = dataSource;
                                 WinJS.Utilities.addClass(noDocuments, "hidden");
@@ -102,9 +106,9 @@
                             } else {
                                 WinJS.Utilities.removeClass(noDocuments, "hidden");
                                 WinJS.Utilities.addClass(libraryListView, "hidden");
-                            }
-                        });
-                    });
+                            } 
+                        }.bind(this));
+                    }.bind(this));
             }
         },
 
@@ -152,7 +156,11 @@
                         });
 
                         return WinJS.Promise.join(copyPromises);
-                    });
+                    }).then(function () {
+                        if (this.initialDocumentCount === 0) {
+                            this.bindProjectLibraryFiles();
+                        }
+                    }.bind(this));
                 } else {
                     return WinJS.Promise.as();
                 }

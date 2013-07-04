@@ -5,7 +5,7 @@
         function constructor() {
 
             // define and initialize properties
-            this.id = (new Date()).getTime();
+            this.id = ClokUtilities.Guid.newGuid();
             this.name = "";
             this.projectNumber = "";
             this.status = statuses.Active;
@@ -34,7 +34,7 @@
             createFromDeserialized: function (value) {
                 var project = new Clok.Data.Project();
 
-                project.id = value.id;
+                project.id = (ClokUtilities.Guid.isGuid(value.id) && value.id) || project.id;
                 project.name = value.name;
                 project.projectNumber = value.projectNumber;
                 project.status = value.status;

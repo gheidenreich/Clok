@@ -153,18 +153,20 @@
         },
 
         saveTimeButton_click: function (e) {
-            this.currentTimeEntry = this.currentTimeEntry || new data.TimeEntry();
+            if (projectId.value !== "") {
+                this.currentTimeEntry = this.currentTimeEntry || new data.TimeEntry();
 
-            var currElapsedSeconds = !isNaN(timeWorked.value) ? (Number(timeWorked.value) * 3600) : 0;
+                var currElapsedSeconds = !isNaN(timeWorked.value) ? (Number(timeWorked.value) * 3600) : 0;
 
-            this.currentTimeEntry.dateWorked = dateWorked.winControl.current;
-            this.currentTimeEntry.projectId = projectId.value;
-            this.currentTimeEntry.elapsedSeconds = currElapsedSeconds;
-            this.currentTimeEntry.notes = notes.value;
+                this.currentTimeEntry.dateWorked = dateWorked.winControl.current;
+                this.currentTimeEntry.projectId = projectId.value;
+                this.currentTimeEntry.elapsedSeconds = currElapsedSeconds;
+                this.currentTimeEntry.notes = notes.value;
 
-            storage.timeEntries.save(this.currentTimeEntry);
+                storage.timeEntries.save(this.currentTimeEntry);
 
-            this.filter_changed();
+                this.filter_changed();
+            }
         },
 
         cancelTimeButton_click: function (e) {

@@ -1,4 +1,5 @@
-﻿/// <reference path="//Microsoft.WinJS.1.0/js/base.js" />
+﻿/// <reference path="//Microsoft.WinJS.1.0/js/ui.js" />
+/// <reference path="//Microsoft.WinJS.1.0/js/base.js" />
 /// <reference path="/js/debug.js" />
 /// <reference path="/js/extensions.js" />
 /// <reference path="project.js" />
@@ -17,8 +18,15 @@
         request.onerror = err;
         request.onupgradeneeded = function (e) {
             var upgradedDb = e.target.result;
-            upgradedDb.createObjectStore("projects", { keyPath: "id", autoIncrement: false });
-            upgradedDb.createObjectStore("timeEntries", { keyPath: "id", autoIncrement: false });
+            if (e.oldVersion < 1) {
+                // Version 1: the initial version of the database
+                upgradedDb.createObjectStore("projects", { keyPath: "id", autoIncrement: false });
+                upgradedDb.createObjectStore("timeEntries", { keyPath: "id", autoIncrement: false });
+            }
+            if (e.oldVersion < 2) {
+                // Version 2: data updated to use GUIDs for id values
+                // TODO - modify all projects and time entries 
+            }
         };
 
         // Load the data source with data from the database
@@ -118,6 +126,20 @@
             },
 
 
+            compareProjects: function (left, right) {
+                // first sort by client name...
+                if (left.clientName !== right.clientName) {
+                    return (left.clientName > right.clientName) ? 1 : -1;
+                }
+
+                // then sort by project name...
+                if (left.name !== right.name) {
+                    return (left.name > right.name) ? 1 : -1;
+                }
+
+                return 0;
+            },
+
             compareProjectGroups: function (left, right) {
                 return left.toUpperCase().charCodeAt(0) - right.toUpperCase().charCodeAt(0);
             },
@@ -177,7 +199,10 @@
                 return statuses.indexOf(p.status) >= 0;
             });
 
+
+
         var grouped = filtered
+            .createSorted(storage.compareProjects)
             .createGrouped(
                 storage.getProjectGroupKey,
                 storage.getProjectGroupData,
@@ -259,8 +284,8 @@
                                 if (te.dateWorked >= end.addDays(1)) return false;
                             }
 
-                            if (projectId && !isNaN(projectId) && Number(projectId) > 0) {
-                                if (te.projectId !== Number(projectId)) return false;
+                            if (projectId && ClokUtilities.Guid.isGuid(projectId)) {
+                                if (te.projectId !== projectId) return false;
                             }
 
                             if (!te.project || te.project.status !== data.ProjectStatuses.Active) return false;
